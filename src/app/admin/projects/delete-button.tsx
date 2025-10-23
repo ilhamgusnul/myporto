@@ -1,0 +1,29 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { deleteProject } from "./actions";
+import { Trash2 } from "lucide-react";
+import { useTransition } from "react";
+
+export function DeleteProjectButton({ id }: { id: string }) {
+  const [isPending, startTransition] = useTransition();
+
+  function handleDelete() {
+    if (confirm("Are you sure you want to delete this project?")) {
+      startTransition(async () => {
+        await deleteProject(id);
+      });
+    }
+  }
+
+  return (
+    <Button
+      variant="destructive"
+      size="sm"
+      onClick={handleDelete}
+      disabled={isPending}
+    >
+      <Trash2 className="h-4 w-4" />
+    </Button>
+  );
+}
