@@ -54,7 +54,7 @@ export default async function ServicesPage() {
       {services.length === 0 && (
         <Card>
           <CardContent className="p-12 text-center">
-            <p className="text-muted-foreground">No services yet. Click "Add Service" to create one.</p>
+            <p className="text-muted-foreground">No services yet. Click &quot;Add Service&quot; to create one.</p>
           </CardContent>
         </Card>
       )}

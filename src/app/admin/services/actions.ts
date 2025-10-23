@@ -37,16 +37,17 @@ export async function updateService(id: string, formData: FormData) {
   });
 
   revalidatePath("/admin/services");
+  revalidatePath("/admin/services");
   redirect("/admin/services");
 }
 
 export async function deleteService(id: string) {
   try {
     await prisma.service.delete({ where: { id } });
-    revalidatePath("/admin/services");
-    return { ok: true };
   } catch (error) {
     console.error("Failed to delete service:", error);
-    return { ok: false, error: "Failed to delete service. It may not exist." };
   }
+  
+  revalidatePath("/admin/services");
+  redirect("/admin/services");
 }

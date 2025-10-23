@@ -75,10 +75,10 @@ export async function updateSkill(id: string, formData: FormData) {
 export async function deleteSkill(id: string) {
   try {
     await prisma.skillGroup.delete({ where: { id } });
-    revalidatePath("/admin/skills");
-    return { ok: true };
   } catch (error) {
     console.error("Failed to delete skill:", error);
-    return { ok: false, error: "Failed to delete skill" };
   }
+  
+  revalidatePath("/admin/skills");
+  redirect("/admin/skills");
 }

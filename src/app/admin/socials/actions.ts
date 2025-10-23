@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function createSocialMedia(formData: FormData) {
   const name = formData.get("name") as string;
@@ -49,9 +50,8 @@ export async function deleteSocialMedia(id: string) {
     });
     revalidatePath("/admin/socials");
     revalidatePath("/");
-    return { success: true };
   } catch (error) {
     console.error("Failed to delete social media:", error);
-    return { success: false, error: "Failed to delete social media" };
   }
+  redirect("/admin/socials");
 }

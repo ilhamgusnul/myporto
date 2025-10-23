@@ -104,10 +104,10 @@ export async function updateProject(id: string, formData: FormData) {
 export async function deleteProject(id: string) {
   try {
     await prisma.project.delete({ where: { id } });
-    revalidatePath("/admin/projects");
-    return { ok: true };
   } catch (error) {
     console.error("Failed to delete project:", error);
-    return { ok: false, error: "Failed to delete project" };
   }
+  
+  revalidatePath("/admin/projects");
+  redirect("/admin/projects");
 }

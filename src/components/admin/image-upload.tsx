@@ -90,6 +90,7 @@ export default function ImageUpload({
         <div className="space-y-2">
           <div className="relative w-full max-w-md">
             <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-gray-200 bg-gray-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
                 alt="Preview"

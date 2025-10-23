@@ -70,10 +70,10 @@ export async function updatePlatform(id: string, formData: FormData) {
 export async function deletePlatform(id: string) {
   try {
     await prisma.platform.delete({ where: { id } });
-    revalidatePath("/admin/platforms");
-    return { ok: true };
   } catch (error) {
     console.error("Failed to delete platform:", error);
-    return { ok: false, error: "Failed to delete platform" };
   }
+  
+  revalidatePath("/admin/platforms");
+  redirect("/admin/platforms");
 }

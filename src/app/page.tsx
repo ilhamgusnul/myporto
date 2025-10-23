@@ -311,7 +311,7 @@ export default async function HomePage() {
           <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-12 md:p-16 text-center space-y-6">
             <h2 className="text-3xl md:text-4xl font-bold text-white">Let&apos;s Work Together</h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              {cta.subheading || "Have a project in mind? Let's discuss how I can help bring your ideas to life."}
+              {cta.subheading || "Have a project in mind? Let&apos;s discuss how I can help bring your ideas to life."}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
               <a href={cta.primaryHref || "#contact"}>
@@ -366,7 +366,7 @@ export default async function HomePage() {
         <section id="contact" className="space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold">Get In Touch</h2>
-            <p className="text-muted-foreground">Let's discuss your next project</p>
+            <p className="text-muted-foreground">Let&apos;s discuss your next project</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
