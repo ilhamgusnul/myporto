@@ -32,25 +32,14 @@ export function ProjectCard({
   const isExpanded = expandedId === id;
 
   return (
-    <div className="relative h-full">
+    <div className={`relative ${isExpanded ? "min-h-[600px]" : "h-full"}`}>
       <Card
         className={`bg-white overflow-visible transition-all duration-300 ease-out cursor-pointer flex flex-col ${
           isExpanded 
-            ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 relative z-50" 
+            ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 absolute top-0 left-0 w-full z-50 min-h-[600px]" 
             : "shadow-lg hover:shadow-xl h-full"
         }`}
         onClick={() => onToggle(id)}
-        style={
-          isExpanded
-            ? {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                minHeight: "600px",
-              }
-            : {}
-        }
       >
       {imageUrl && (
         <div className="relative h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">

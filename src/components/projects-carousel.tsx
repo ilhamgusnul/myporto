@@ -90,10 +90,6 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
           <div
             key={project.id}
             className="flex-none w-[350px] snap-start"
-            style={{
-              minHeight: expandedId === project.id ? "600px" : "auto",
-              transition: "min-height 0.3s ease-out",
-            }}
           >
             <ProjectCard
               {...project}
