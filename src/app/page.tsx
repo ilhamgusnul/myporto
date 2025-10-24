@@ -83,7 +83,7 @@ export default async function HomePage() {
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl font-bold">Portfolio</Link>
             <div className="flex items-center gap-6">
-              <a href="#hero" className="text-sm hover:text-[#ff6b00] transition-colors">Home</a>
+              <a href="#hero" className="text-sm hover:text-[#ff6b00] transition-colors">About</a>
               <a href="#services" className="text-sm hover:text-[#ff6b00] transition-colors">Services</a>
               <a href="#skills" className="text-sm hover:text-[#ff6b00] transition-colors">Skills</a>
               <a href="#projects" className="text-sm hover:text-[#ff6b00] transition-colors">Projects</a>

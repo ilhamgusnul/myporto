@@ -10,7 +10,7 @@ export async function updateAbout(id: string, formData: FormData) {
     subtitle: String(formData.get("subtitle") || ""),
     tagline: String(formData.get("tagline") || "Code by Logic, Design with Passion"),
     content: String(formData.get("content") || ""),
-    imageUrl: String(formData.get("imageUrl") || "") || null,
+    avatarUrl: String(formData.get("avatarUrl") || "") || null,
   };
 
   const { error } = await supabaseAdmin.from("About").update(data).eq("id", id);
