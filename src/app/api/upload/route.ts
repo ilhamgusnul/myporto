@@ -31,10 +31,20 @@ export async function POST(req: Request) {
     }
 
     // Initialize Supabase client with service role key
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error("Missing Supabase credentials");
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
 
     // Convert file to bytes
     const arrayBuffer = await file.arrayBuffer();
@@ -46,7 +56,9 @@ export async function POST(req: Request) {
     const path = `uploads/${filename}`;
 
     // Upload to Supabase Storage
-    const { error: uploadError } = await supabase.storage
+    console.log(`Uploading file: ${filename} (${file.size} bytes) to bucket: assets`);
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
       .from("assets")
       .upload(path, bytes, {
         contentType: file.type,
@@ -54,16 +66,36 @@ export async function POST(req: Request) {
       });
 
     if (uploadError) {
-      console.error("Upload error:", uploadError);
-      return NextResponse.json({ error: uploadError.message }, { status: 500 });
+      console.error("Upload error details:", {
+        message: uploadError.message,
+        name: uploadError.name,
+        stack: uploadError.stack,
+        bucket: "assets",
+        path: path
+      });
+      return NextResponse.json({ 
+        error: `Upload failed: ${uploadError.message}`,
+        details: uploadError 
+      }, { status: 500 });
     }
+
+    console.log("Upload successful:", uploadData);
 
     // Get public URL
     const { data } = supabase.storage.from("assets").getPublicUrl(path);
 
-    return NextResponse.json({ url: data.publicUrl });
+    console.log("Public URL generated:", data.publicUrl);
+
+    return NextResponse.json({ 
+      url: data.publicUrl,
+      path: path,
+      size: file.size
+    });
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    console.error("Upload error (catch):", error);
+    return NextResponse.json({ 
+      error: error instanceof Error ? error.message : "Upload failed",
+      details: error
+    }, { status: 500 });
   }
 }
