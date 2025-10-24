@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function EditPlatformPage({
   params,
@@ -74,7 +75,7 @@ export default async function EditPlatformPage({
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Update Platform</Button>
+          <SubmitButton>Update Platform</SubmitButton>
           <Link href="/admin/platforms">
             <Button variant="outline" type="button">
               Cancel

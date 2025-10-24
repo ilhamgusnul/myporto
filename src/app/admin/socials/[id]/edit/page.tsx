@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function EditSocialPage({
   params,
@@ -98,7 +99,7 @@ export default async function EditSocialPage({
         </div>
 
         <div className="flex gap-4">
-          <Button type="submit">Update Social Media</Button>
+          <SubmitButton>Update Social Media</SubmitButton>
           <Link href="/admin/socials">
             <Button type="button" variant="outline">
               Cancel

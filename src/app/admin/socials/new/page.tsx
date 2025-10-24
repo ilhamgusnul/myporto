@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default function NewSocialPage() {
   return (
@@ -77,7 +78,7 @@ export default function NewSocialPage() {
         </div>
 
         <div className="flex gap-4">
-          <Button type="submit">Create Social Media</Button>
+          <SubmitButton>Create Social Media</SubmitButton>
           <Link href="/admin/socials">
             <Button type="button" variant="outline">
               Cancel

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default function NewPlatformPage() {
   return (
@@ -57,7 +58,7 @@ export default function NewPlatformPage() {
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Create Platform</Button>
+          <SubmitButton>Create Platform</SubmitButton>
           <Link href="/admin/platforms">
             <Button variant="outline" type="button">
               Cancel
