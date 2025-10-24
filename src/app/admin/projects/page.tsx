@@ -51,9 +51,8 @@ export default async function ProjectsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Title</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Stack</TableHead>
-                <TableHead>Completed</TableHead>
+                <TableHead>Technologies</TableHead>
+                <TableHead>Demo URL</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -61,10 +60,9 @@ export default async function ProjectsPage() {
               {projects.map((project) => (
                 <TableRow key={project.id}>
                   <TableCell className="font-medium">{project.title}</TableCell>
-                  <TableCell>{project.category.replace(/_/g, " ")}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap">
-                      {project.stack.slice(0, 3).map((tech: string, i: number) => (
+                      {project.technologies?.slice(0, 3).map((tech: string, i: number) => (
                         <span
                           key={i}
                           className="text-xs bg-slate-100 px-2 py-1 rounded"
@@ -72,17 +70,26 @@ export default async function ProjectsPage() {
                           {tech}
                         </span>
                       ))}
-                      {project.stack.length > 3 && (
+                      {project.technologies && project.technologies.length > 3 && (
                         <span className="text-xs text-muted-foreground">
-                          +{project.stack.length - 3}
+                          +{project.technologies.length - 3}
                         </span>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
-                    {project.completedAt
-                      ? new Date(project.completedAt).toLocaleDateString()
-                      : "-"}
+                    {project.demoUrl ? (
+                      <a 
+                        href={project.demoUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline text-sm"
+                      >
+                        View Demo
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">-</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right space-x-2">
                     <Link href={`/admin/projects/${project.id}/edit`}>
