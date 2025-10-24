@@ -1,8 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { updateContact } from "./actions";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function ContactPage() {
   const { data: contact } = await supabaseAdmin
@@ -49,12 +49,12 @@ export default async function ContactPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="whatsapp">WhatsApp Number</Label>
+          <Label htmlFor="phone">Phone Number</Label>
           <Input
-            id="whatsapp"
-            name="whatsapp"
+            id="phone"
+            name="phone"
             type="tel"
-            defaultValue={contact.whatsapp || ""}
+            defaultValue={contact.phone || ""}
             placeholder="+62812345678"
           />
           <p className="text-xs text-muted-foreground">
@@ -73,7 +73,7 @@ export default async function ContactPage() {
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Save Changes</Button>
+          <SubmitButton>Save Changes</SubmitButton>
         </div>
       </form>
     </div>

@@ -1,9 +1,9 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { updateCTA } from "./actions";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function CTAPage() {
   const { data: cta } = await supabaseAdmin
@@ -84,7 +84,7 @@ export default async function CTAPage() {
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Save Changes</Button>
+          <SubmitButton>Save Changes</SubmitButton>
         </div>
       </form>
     </div>
