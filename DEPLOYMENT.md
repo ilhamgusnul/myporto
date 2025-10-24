@@ -1,142 +1,300 @@
-# Vercel Deployment Configuration
+# Vercel Deployment Guide
 
-## Environment Variables
+Complete guide untuk deploy portfolio ke Vercel dengan Supabase backend.
 
-Set the following in Vercel Dashboard (Settings → Environment Variables):
+---
 
-### Required Variables
+## 📋 Prerequisites
 
+- ✅ Supabase project sudah setup dengan migrations
+- ✅ Admin user sudah dibuat di Supabase Auth
+- ✅ GitHub repository ready
+- ✅ Vercel account (gratis di [vercel.com](https://vercel.com))
+
+---
+
+## 🚀 Deployment Steps
+
+### 1. Push to GitHub
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/username/your-repo.git
+git push -u origin main
 ```
-NEXTAUTH_URL=https://your-domain.vercel.app
-NEXTAUTH_SECRET=<generate-new-secret>
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-DATABASE_URL=postgresql://postgres:password@host:5432/postgres?pgbouncer=true&connection_limit=1&sslmode=require
+
+### 2. Import Project ke Vercel
+
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Click **Import Git Repository**
+3. Select your GitHub repository
+4. Click **Import**
+
+### 3. Configure Environment Variables
+
+⚠️ **PENTING**: Set semua environment variables sebelum deploy!
+
+Di Vercel Dashboard → Settings → Environment Variables, tambahkan:
+
+#### Required Variables:
+
+```env
+NEXTAUTH_URL=https://your-project.vercel.app
+NEXTAUTH_SECRET=<generate-new-with-openssl>
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=eyJ...your_service_role_key
 ```
 
-### Generate NEXTAUTH_SECRET
+#### Generate NEXTAUTH_SECRET
 
-Run locally:
+Run locally (di terminal):
 ```bash
 openssl rand -base64 32
 ```
 
-## Deployment Steps
+Copy output dan paste sebagai value untuk `NEXTAUTH_SECRET`.
 
-1. **Push to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit"
-   git branch -M main
-   git remote add origin https://github.com/username/portfolio.git
-   git push -u origin main
-   ```
+#### Get Supabase Keys
 
-2. **Import to Vercel**
-   - Go to [vercel.com/new](https://vercel.com/new)
-   - Import your GitHub repository
-   - Configure environment variables
-   - Deploy!
+1. Open Supabase Dashboard
+2. Go to **Settings** → **API**
+3. Copy:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role` key → `SUPABASE_SERVICE_ROLE_KEY`
 
-3. **Post-Deployment**
+### 4. Deploy
 
-   After first deployment, you may need to run migrations:
+1. Click **Deploy**
+2. Wait untuk build selesai (~2-3 minutes)
+3. Vercel akan otomatis generate URL: `https://your-project.vercel.app`
 
-   ```bash
-   # Update .env with production DATABASE_URL
-   npx prisma migrate deploy
-   
-   # Optional: Seed production data
-   npm run prisma:seed
-   ```
+### 5. Update NEXTAUTH_URL (After First Deploy)
 
-## Build Configuration
+⚠️ **CRITICAL**: After first deployment:
 
-Vercel automatically detects Next.js projects. Default settings work fine:
-
-- **Framework Preset**: Next.js
-- **Build Command**: `next build`
-- **Output Directory**: `.next`
-- **Install Command**: `npm install`
-
-## Custom Domain
-
-1. Go to Vercel Dashboard → Settings → Domains
-2. Add your custom domain
-3. Follow DNS configuration instructions
-4. Update `NEXTAUTH_URL` to your custom domain
-
-## Performance Optimization
-
-### Image Optimization
-
-Add to `next.config.js`:
-
-```js
-images: {
-  domains: ['your-supabase-project.supabase.co'],
-  formats: ['image/avif', 'image/webp'],
-}
-```
-
-### ISR (Incremental Static Regeneration)
-
-For better performance on landing page:
-
-```tsx
-export const revalidate = 60; // Revalidate every 60 seconds
-```
-
-## Troubleshooting
-
-### Build Errors
-
-1. **Prisma Client Not Found**
-   ```bash
-   # Add postinstall script to package.json
-   "postinstall": "prisma generate"
-   ```
-
-2. **Environment Variables**
-   - Make sure all variables are set in Vercel Dashboard
-   - Don't include quotes around values in Vercel UI
-
-3. **Database Connection**
-   - Use connection pooling URL from Supabase
-   - Include `pgbouncer=true&connection_limit=1`
-
-## Monitoring
-
-- Check **Vercel Analytics** for performance insights
-- Monitor **Vercel Logs** for runtime errors
-- Set up **Sentry** for error tracking (optional)
-
-## CI/CD
-
-Vercel automatically deploys on push to main branch. For staging:
-
-1. Create `develop` branch
-2. Vercel will create preview deployments automatically
-3. Merge to `main` for production
-
-## Database Backups
-
-Supabase automatically backs up your database. To download:
-
-1. Go to Supabase Dashboard → Database → Backups
-2. Download latest backup
-3. Store securely
-
-## Cost Optimization
-
-- **Vercel**: Free tier includes 100GB bandwidth
-- **Supabase**: Free tier includes 500MB database + 1GB storage
-- **Upgrade** only when you exceed limits
+1. Copy your Vercel URL (e.g., `https://your-project.vercel.app`)
+2. Go to Vercel → Settings → Environment Variables
+3. Edit `NEXTAUTH_URL` value dengan URL Vercel Anda
+4. Click **Save**
+5. Go to Deployments → Click **Redeploy**
 
 ---
 
-For more details, see:
-- [Vercel Docs](https://vercel.com/docs)
+## ✅ Verify Deployment
+
+### Test Landing Page
+Visit: `https://your-project.vercel.app`
+
+Should show:
+- ✅ Hero section with About info
+- ✅ Stats, Services, Skills
+- ✅ Projects carousel
+- ✅ Contact form
+
+### Test Admin Login
+Visit: `https://your-project.vercel.app/login`
+
+Login dengan:
+- Email: [email yang dibuat di Supabase]
+- Password: [password yang di-set]
+
+Should redirect ke: `https://your-project.vercel.app/admin`
+
+---
+
+## 🔧 Troubleshooting
+
+### Error: "Configuration Error" pada login
+
+**Problem**: `NEXTAUTH_SECRET` tidak di-set atau invalid
+
+**Solution**:
+1. Generate new secret: `openssl rand -base64 32`
+2. Set di Vercel env vars
+3. Redeploy
+
+### Error: "Invalid email or password"
+
+**Problem**: User tidak ada di Supabase atau Profile tidak dibuat
+
+**Solution**:
+1. Cek di Supabase → Authentication → Users
+2. Pastikan user exists dan email confirmed
+3. Run SQL untuk create/update Profile:
+   ```sql
+   INSERT INTO public."Profile" (id, email, name, role, "createdAt", "updatedAt")
+   VALUES (
+       'user-id-from-auth-users'::uuid,
+       'your-email@example.com',
+       'Your Name',
+       'ADMIN',
+       NOW(),
+       NOW()
+   )
+   ON CONFLICT (id) DO UPDATE SET
+       role = 'ADMIN',
+       name = 'Your Name';
+   ```
+
+### Error: Images tidak muncul
+
+**Problem**: Image URLs tidak accessible atau CORS issue
+
+**Solution**:
+1. Pastikan images di-upload ke Supabase Storage
+2. Atau gunakan external URLs (Imgur, Cloudinary, dll)
+
+### Error: "supabaseUrl is required"
+
+**Problem**: Environment variables tidak ke-load
+
+**Solution**:
+1. Cek semua env vars di Vercel Dashboard
+2. Pastikan tidak ada typo pada key names
+3. Redeploy dengan clear cache
+
+---
+
+## 🎨 Custom Domain (Optional)
+
+### Setup Custom Domain
+
+1. Go to Vercel Dashboard → Settings → Domains
+2. Click **Add Domain**
+3. Enter your domain (e.g., `yourname.com`)
+4. Follow DNS configuration instructions
+
+#### For Cloudflare:
+```
+Type: CNAME
+Name: @ (or www)
+Target: cname.vercel-dns.com
+```
+
+#### For Namecheap/GoDaddy:
+```
+Type: CNAME
+Host: @
+Value: cname.vercel-dns.com
+```
+
+5. Wait for DNS propagation (~5-30 minutes)
+6. Update `NEXTAUTH_URL` ke custom domain Anda
+7. Redeploy
+
+---
+
+## 📊 Performance Tips
+
+### Enable ISR (Incremental Static Regeneration)
+
+Add to `src/app/page.tsx`:
+
+```typescript
+export const revalidate = 60; // Revalidate every 60 seconds
+```
+
+### Optimize Images
+
+Images akan otomatis di-optimize oleh Next.js Image component.
+
+Untuk external images, tambahkan domain di `next.config.js`:
+
+```javascript
+module.exports = {
+  images: {
+    domains: ['your-project.supabase.co', 'other-domain.com'],
+  },
+};
+```
+
+### Database Connection Pooling
+
+Pastikan menggunakan **Pooler connection string** dari Supabase untuk production.
+
+---
+
+## 🔄 Continuous Deployment
+
+Setelah setup awal, setiap push ke GitHub akan otomatis trigger deployment baru:
+
+```bash
+git add .
+git commit -m "Update homepage"
+git push origin main
+```
+
+Vercel akan:
+1. ✅ Build project
+2. ✅ Run tests (jika ada)
+3. ✅ Deploy ke production
+4. ✅ Send notification
+
+---
+
+## 📈 Monitoring
+
+### View Logs
+
+Vercel Dashboard → Deployments → [Select deployment] → Logs
+
+### View Analytics
+
+Vercel Dashboard → Analytics
+
+Track:
+- Page views
+- Unique visitors
+- Top pages
+- Load times
+
+---
+
+## 💾 Backup Strategy
+
+### Database Backup
+
+Supabase automatically creates backups (7 days retention on free plan).
+
+Manual backup:
+1. Supabase Dashboard → Database
+2. Click **Backup**
+3. Download SQL dump
+
+### Environment Variables Backup
+
+Save your env vars securely (1Password, BitWarden, etc):
+
+```env
+# Production Env Vars (DO NOT COMMIT)
+NEXTAUTH_URL=...
+NEXTAUTH_SECRET=...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+---
+
+## 🆘 Support
+
+### Vercel Docs
 - [Next.js Deployment](https://nextjs.org/docs/deployment)
+- [Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
+
+### Supabase Docs
+- [Database](https://supabase.com/docs/guides/database)
+- [Auth](https://supabase.com/docs/guides/auth)
+
+### Community
+- [Vercel Discord](https://discord.gg/vercel)
+- [Supabase Discord](https://discord.supabase.com)
+
+---
+
+**Happy Deploying! 🚀**

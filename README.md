@@ -1,105 +1,97 @@
 # Portfolio Next.js + Supabase
 
 > **Full-stack portfolio website dengan admin panel lengkap**  
-> Next.js 14 (App Router) · Supabase · Prisma · NextAuth · Tailwind · shadcn/ui
+> Next.js 14 (App Router) · Supabase Auth · PostgreSQL · NextAuth · Tailwind CSS · shadcn/ui
 
-Demo login: `admin@example.com` / `Admin123!`
+🌐 **Live Demo:** [https://ilhamgusnul.vercel.app](https://ilhamgusnul.vercel.app)
 
 ---
 
 ## ✨ Features
 
-- 🎨 **Modern Landing Page** - Hero, Stats, Services, Skills, Projects, CTA, Platforms, Contact
-- 🔐 **Authentication** - NextAuth dengan Credentials provider
-- 📊 **Admin Dashboard** - Statistik ringkas & recent messages
-- ✏️ **Full CRUD** - Manage About, Services, Skills, Projects, Platforms, Contact Info, Stats, CTA
-- 📁 **File Upload** - Gambar ke Supabase Storage
-- 💬 **Contact Form** - Menerima pesan dari visitor
+- 🎨 **Modern Landing Page** - Hero/About, Stats, Services, Skills, Projects, CTA, Platforms, Contact
+- 🔐 **Supabase Authentication** - Secure auth dengan NextAuth + Supabase Auth
+- 📊 **Admin Dashboard** - Full CRUD untuk semua konten
+- 📁 **Image Upload** - Upload gambar ke Supabase Storage
+- 💬 **Contact Form** - Terima pesan dari visitor
 - 🎯 **Type-Safe** - TypeScript + Zod validation
 - 🎨 **Beautiful UI** - Tailwind CSS + shadcn/ui components
+- 📱 **Responsive** - Mobile-first design
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Prerequisites
+### Prerequisites
 
-- **Node.js** 18+ (recommend 20 LTS)
+- **Node.js** 18+ 
 - **npm/pnpm/yarn**
-- **Supabase Account** (gratis di https://supabase.com)
+- **Supabase Account** (gratis di [supabase.com](https://supabase.com))
+- **Vercel Account** (opsional, untuk deployment)
 
-### 2. Supabase Setup
-
-1. Buat project baru di Supabase
-2. Pilih region terdekat (Singapore untuk Indonesia)
-3. Copy credentials dari dashboard:
-
-#### Database URL
-```
-Settings → Database → Connection string → Node.js
-```
-Contoh:
-```
-postgresql://postgres.[project-ref]:[YOUR-PASSWORD]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1
-```
-
-#### API Keys
-```
-Settings → API → Project URL
-Settings → API → anon public key
-Settings → API → service_role key (untuk upload)
-```
-
-#### Storage Bucket
-```
-Storage → Create bucket
-Name: assets
-Public: OFF (kita akan pakai signed URLs)
-```
-
-### 3. Install & Setup
+### 1. Clone Repository
 
 ```bash
-# Clone / extract project
-cd portfolio-supabase
-
-# Install dependencies
-npm install
-
-# Copy environment file
-cp .env.example .env
-
-# Edit .env dengan credentials Supabase Anda
-nano .env
+git clone https://github.com/ilhamgusnul/myporto.git
+cd myporto
 ```
 
-#### .env Configuration
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Supabase
+
+1. **Create Project** di [supabase.com](https://supabase.com)
+2. **Get Credentials**:
+   - Go to Settings → API
+   - Copy `Project URL` dan `anon public key`
+   - Copy `service_role key` (untuk admin operations)
+
+3. **Run Migrations**:
+   - Install Supabase CLI: `npm install -g supabase`
+   - Link project: `npx supabase link --project-ref your-project-id`
+   - Push migrations: `npx supabase db push`
+   
+   Atau jalankan SQL manual di SQL Editor:
+   - Copy isi dari `supabase/migrations/20251024104840_init-schema.sql`
+   - Paste dan run di Supabase SQL Editor
+
+4. **Create Admin User**:
+   - Go to Authentication → Users
+   - Click "Add User"
+   - Set email dan password
+   - Check "Auto Confirm User"
+   - Run SQL untuk set role ADMIN:
+   ```sql
+   UPDATE public."Profile" 
+   SET role = 'ADMIN', name = 'Your Name'
+   WHERE email = 'your-email@example.com';
+   ```
+
+### 4. Environment Variables
+
+Create `.env` file:
 
 ```env
-# Next Auth
+# App
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=<generate dengan: openssl rand -base64 32>
+NEXTAUTH_SECRET=<generate with: openssl rand -base64 32>
 
 # Supabase
-SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI...
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI...
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# Database (dari Supabase → Settings → Database)
-DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.YOUR-PROJECT.supabase.co:5432/postgres?pgbouncer=true&connection_limit=1&sslmode=require
+# Database (optional, untuk direct access)
+DATABASE_URL=postgres://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true
 ```
 
-### 4. Database Migration & Seed
-
+Generate NEXTAUTH_SECRET:
 ```bash
-# Generate Prisma Client
-npx prisma generate
-
-# Run migration (buat tables)
-npx prisma migrate dev --name init
-
-# Seed database dengan data awal
-npm run prisma:seed
+openssl rand -base64 32
 ```
 
 ### 5. Run Development Server
@@ -120,42 +112,42 @@ Buka [http://localhost:3000](http://localhost:3000)
 
 ```
 portfolio-supabase/
-├── prisma/
-│   ├── schema.prisma          # Database schema
-│   └── seed.ts                # Seed data
+├── supabase/
+│   └── migrations/
+│       └── 20251024104840_init-schema.sql  # Database schema
 ├── src/
 │   ├── app/
-│   │   ├── (site)/
-│   │   │   └── page.tsx       # Landing page publik
-│   │   ├── admin/             # Admin panel (protected)
-│   │   │   ├── layout.tsx
-│   │   │   ├── page.tsx       # Dashboard
-│   │   │   ├── about/
-│   │   │   ├── services/
-│   │   │   ├── skills/
-│   │   │   ├── projects/
-│   │   │   ├── platforms/
-│   │   │   ├── contact/
-│   │   │   ├── stats/
-│   │   │   ├── cta/
-│   │   │   └── messages/
-│   │   ├── login/
-│   │   │   └── page.tsx       # Login page
-│   │   ├── api/
-│   │   │   ├── auth/[...nextauth]/ # NextAuth
-│   │   │   ├── upload/        # Upload gambar
-│   │   │   └── contact/       # Contact form submission
-│   │   ├── layout.tsx
-│   │   └── globals.css
+│   │   ├── page.tsx                        # Landing page
+│   │   ├── login/page.tsx                  # Login page
+│   │   ├── admin/                          # Admin panel (protected)
+│   │   │   ├── page.tsx                    # Dashboard
+│   │   │   ├── about/                      # Edit About/Hero section
+│   │   │   ├── services/                   # CRUD Services
+│   │   │   ├── skills/                     # CRUD Skills
+│   │   │   ├── projects/                   # CRUD Projects
+│   │   │   ├── platforms/                  # CRUD Platforms
+│   │   │   ├── contact/                    # Edit Contact Info
+│   │   │   ├── stats/                      # CRUD Stats
+│   │   │   ├── cta/                        # Edit CTA section
+│   │   │   ├── socials/                    # CRUD Social Media
+│   │   │   ├── messages/                   # View Messages
+│   │   │   └── profile/                    # Edit Profile & Password
+│   │   └── api/
+│   │       ├── auth/[...nextauth]/         # NextAuth API
+│   │       ├── upload/                     # Image upload API
+│   │       └── contact/                    # Contact form API
 │   ├── components/
-│   │   └── ui/                # shadcn/ui components
+│   │   ├── ui/                             # shadcn/ui components
+│   │   ├── admin/
+│   │   │   └── image-upload.tsx            # Image upload component
+│   │   ├── scroll-to-top.tsx
+│   │   └── carousel-navigation.tsx
 │   ├── lib/
-│   │   ├── prisma.ts          # Prisma client
-│   │   ├── supabase.ts        # Supabase client
-│   │   ├── auth.ts            # NextAuth config
-│   │   ├── validators.ts      # Zod schemas
+│   │   ├── supabase.ts                     # Supabase client
+│   │   ├── auth.ts                         # NextAuth config
+│   │   ├── validators.ts                   # Zod schemas
 │   │   └── utils.ts
-│   └── middleware.ts          # Route protection
+│   └── middleware.ts                       # Route protection
 ├── .env
 ├── package.json
 └── README.md
@@ -163,98 +155,62 @@ portfolio-supabase/
 
 ---
 
-## 🗄️ Database Schema
+## 🗄️ Database Tables
 
-### Models
-
-- **Profile** - User profiles (linked to Supabase Auth)
-- **About** - Personal info & bio (singleton-like)
+- **Profile** - User profiles (auto-created from auth.users)
+- **About** - Personal info & bio (Hero section)
 - **Service** - Services offered
-- **SkillGroup** - Skill categories dengan proficiency & tools
-- **Project** - Portfolio projects dengan kategori
-- **Platform** - Social media & links
-- **ContactInfo** - Contact details (singleton)
-- **Stat** - Homepage statistics (projects_completed, years_experience, dll)
+- **SkillGroup** - Skills dengan proficiency & tools list
+- **Project** - Portfolio projects
+- **Platform** - Social platforms/links
+- **ContactInfo** - Contact details
+- **Stat** - Homepage statistics
 - **CTA** - Call-to-action section
-- **Message** - Messages dari contact form
-- **SocialMedia** - Social media links for footer
+- **Message** - Contact form messages
+- **SocialMedia** - Social media links (footer)
 
 ---
 
-## 🛠️ Admin Panel Features
+## 🎨 Admin Panel
 
 ### Dashboard (`/admin`)
-- Total counts untuk setiap entity
-- Recent messages preview
+- Overview semua konten
+- Recent messages
 
 ### About (`/admin/about`)
-- Edit personal title, subtitle, content (markdown)
-- Upload avatar image
+- Edit hero section (title, subtitle, tagline, content, avatar)
 
 ### Services (`/admin/services`)
-- CRUD services
-- Title & description
+- Manage services yang ditawarkan
+- Icon, title, description, order
 
 ### Skills (`/admin/skills`)
-- CRUD skill groups
-- Title, proficiency (0-100), tools (array)
+- Manage skill groups
+- Title, proficiency, tools array
 
 ### Projects (`/admin/projects`)
-- CRUD projects dengan categories
-- Upload project images
-- Stack teknologi (array)
-- Live URL & GitHub URL
-
-### Platforms (`/admin/platforms`)
-- CRUD social platforms
-- Name, profile URL, tagline, logo
-
-### Contact Info (`/admin/contact`)
-- Edit contact details (location, email, WhatsApp)
+- Portfolio projects
+- Image, title, description, tech stack, links, featured
 
 ### Stats (`/admin/stats`)
-- Edit homepage statistics
-- Key, label, value
+- Homepage statistics (years experience, projects completed, dll)
 
-### CTA (`/admin/cta`)
-- Edit call-to-action section
-- Heading, subheading, primary & secondary buttons
+### Platforms (`/admin/platforms`)
+- Social platforms & profile links
+
+### Contact (`/admin/contact`)
+- Edit contact information (email, whatsapp, location)
 
 ### Messages (`/admin/messages`)
-- View messages dari contact form
-- Read-only list + delete
+- View & delete messages dari contact form
+
+### Profile (`/admin/profile`)
+- Edit profile name & email
+- Change password
 
 ---
 
-## 🎨 Customization
-
-### Colors & Theme
-
-Edit `src/app/globals.css` untuk ubah color scheme:
-
-```css
-:root {
-  --primary: 222.2 47.4% 11.2%;
-  --secondary: 210 40% 96.1%;
-  /* ... */
-}
-```
-
-### Fonts
-
-Edit `src/app/layout.tsx`:
-
-```ts
-import { Inter, Poppins } from "next/font/google";
-```
-
-### Landing Page Sections
-
-Edit `src/app/(site)/page.tsx` untuk customize layout & content.
-
----
-
-## 🚢 Deployment (Vercel)
+## 🚀 Deployment (Vercel)
 
 ### 1. Push to GitHub
 
@@ -263,135 +219,64 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/username/portfolio.git
+git remote add origin https://github.com/username/repo.git
 git push -u origin main
 ```
 
-### 2. Deploy ke Vercel
+### 2. Deploy to Vercel
 
-1. Import project dari GitHub di [vercel.com](https://vercel.com)
-2. Set Environment Variables (sama seperti `.env`):
-   - `NEXTAUTH_URL` = `https://yourdomain.vercel.app`
-   - `NEXTAUTH_SECRET` = (generate baru dengan `openssl rand -base64 32`)
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `DATABASE_URL`
-
+1. Import project di [vercel.com](https://vercel.com)
+2. Set Environment Variables:
+   ```
+   NEXTAUTH_URL=https://your-domain.vercel.app
+   NEXTAUTH_SECRET=<generate new one>
+   NEXT_PUBLIC_SUPABASE_URL=https://...supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+   SUPABASE_SERVICE_ROLE_KEY=eyJ...
+   ```
 3. Deploy!
 
-### 3. Run Migration di Production (Optional)
+### 3. Update NEXTAUTH_URL
 
-Jika belum migration, jalankan lokal yang connect ke DB production:
-
-```bash
-# Edit .env dengan DATABASE_URL production
-npx prisma migrate deploy
-npm run prisma:seed
-```
-
----
-
-## 📝 Development Notes
-
-### Prisma Commands
-
-```bash
-# Generate client after schema change
-npx prisma generate
-
-# Create migration
-npx prisma migrate dev --name your_migration_name
-
-# Apply migrations (production)
-npx prisma migrate deploy
-
-# Open Prisma Studio
-npm run prisma:studio
-
-# Reset database (WARNING: deletes all data)
-npx prisma migrate reset
-```
-
-### Adding New Admin Pages
-
-Ikuti pattern di `/admin/services`:
-
-1. Buat `actions.ts` untuk server actions (create/update/delete)
-2. Buat `page.tsx` untuk list view
-3. Buat `new/page.tsx` untuk create form
-4. Buat `[id]/edit/page.tsx` untuk edit form
-5. Tambah link di `admin/layout.tsx` navigation
-
-### Upload Images
-
-File upload menggunakan endpoint `/api/upload` yang simpan ke Supabase Storage bucket `assets`.
-
----
-
-## 🐛 Troubleshooting
-
-### Prisma Connection Error
-
-```
-Can't reach database server
-```
-
-**Solusi**: Check DATABASE_URL correct, pastikan include `?pgbouncer=true&connection_limit=1`
-
-### NextAuth Session Error
-
-```
-[next-auth][error] JWT error
-```
-
-**Solusi**: Set NEXTAUTH_SECRET yang valid (32+ random characters)
-
-### Upload gagal (401)
-
-**Solusi**: 
-- Check SUPABASE_SERVICE_ROLE_KEY set correctly
-- Pastikan bucket `assets` exists di Supabase Storage
-
-### TypeScript Errors after install
-
-**Solusi**: 
-```bash
-npx prisma generate
-npm run dev # restart dev server
-```
+Setelah deploy, update environment variable `NEXTAUTH_URL` dengan URL production Anda.
 
 ---
 
 ## 📚 Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
-- **Database**: PostgreSQL (via Supabase)
-- **ORM**: Prisma
-- **Auth**: NextAuth.js
+- **Database**: Supabase PostgreSQL
+- **Authentication**: Supabase Auth + NextAuth.js
 - **Storage**: Supabase Storage
 - **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui (Radix UI)
+- **UI Components**: shadcn/ui
 - **Validation**: Zod
-- **Icons**: Lucide React
-- **Deployment**: Vercel (recommended)
+- **Language**: TypeScript
+
+---
+
+## 🤝 Contributing
+
+Feel free to fork, improve, and submit PRs!
 
 ---
 
 ## 📄 License
 
-MIT License - bebas digunakan untuk project pribadi maupun komersial.
+MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-## 🤝 Support
+## 👤 Author
 
-Jika ada pertanyaan atau issue:
+**Ilham Gusnul Romadhon**
 
-1. Check dokumentasi Supabase: https://supabase.com/docs
-2. Next.js docs: https://nextjs.org/docs
-3. Prisma docs: https://www.prisma.io/docs
+- Website: [ilhamgusnul.vercel.app](https://ilhamgusnul.vercel.app)
+- GitHub: [@ilhamgusnul](https://github.com/ilhamgusnul)
 
 ---
 
-**Happy coding! 🚀**
+## 📖 Additional Documentation
+
+- [`DEPLOYMENT.md`](DEPLOYMENT.md) - Detailed deployment guide
+- [`PERBAIKAN_ABOUT.md`](PERBAIKAN_ABOUT.md) - About section integration guide
