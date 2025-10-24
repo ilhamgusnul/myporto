@@ -51,10 +51,10 @@ async function ContactForm() {
         throw error;
       }
       
-      return { success: true };
+      console.log("Message sent successfully");
     } catch (error) {
       console.error("Contact form error:", error);
-      return { success: false, error: "Failed to send message" };
+      throw new Error("Failed to send message");
     }
   }
 
