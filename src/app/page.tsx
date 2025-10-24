@@ -9,6 +9,7 @@ import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Facebook, Instagram, Yo
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { CarouselNavigation } from "@/components/carousel-navigation";
 import { ContactForm } from "@/components/contact-form";
+import { ProjectsCarousel } from "@/components/projects-carousel";
 import * as LucideIcons from "lucide-react";
 
 // Icon mapping for social media and services
@@ -49,7 +50,7 @@ export default async function HomePage() {
     supabase.from("About").select("*").limit(1).single(),
     supabase.from("Service").select("*").order("order"),
     supabase.from("SkillGroup").select("*").order("order"),
-    supabase.from("Project").select("*").order("createdAt", { ascending: false }).limit(6),
+    supabase.from("Project").select("*").order("createdAt", { ascending: false }).limit(10),
     supabase.from("Platform").select("*").order("order"),
     supabase.from("CTA").select("*").limit(1).single(),
     supabase.from("ContactInfo").select("*").limit(1).single(),
@@ -225,64 +226,15 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Projects Section with Carousel */}
+        {/* Projects Section */}
         {projects && projects.length > 0 && (
           <section id="projects" className="py-20">
-            <div className="mb-12">
+            <div className="mb-12 text-center">
               <h2 className="text-4xl font-bold mb-4">Featured Projects</h2>
               <p className="text-gray-600">Check out some of my recent work</p>
             </div>
 
-            <CarouselNavigation items={projects}>
-              <div className="relative -mx-4 px-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-                <div className="flex gap-6 pb-4">
-                  {projects.map((project) => (
-                    <div key={project.id} className="flex-none w-[350px] snap-start">
-                      <Card className="h-full shadow-lg hover:shadow-2xl transition-all duration-300 border">
-                        <div className="relative aspect-video overflow-hidden">
-                          <Image
-                            src={project.imageUrl || "/placeholder.jpg"}
-                            alt={project.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="p-6">
-                          <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                          <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
-                          <div className="flex gap-2 mb-4 flex-wrap">
-                            {project.technologies?.slice(0, 3).map((tech: string, i: number) => (
-                              <span
-                                key={i}
-                                className="px-3 py-1 bg-gray-100 text-xs rounded-full"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                          <div className="flex gap-2">
-                            {project.demoUrl && (
-                              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                                <Button size="sm" className="bg-[#ff6b00] hover:bg-[#e55f00]">
-                                  Live Demo
-                                </Button>
-                              </a>
-                            )}
-                            {project.githubUrl && (
-                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                                <Button size="sm" variant="outline">
-                                  Source Code
-                                </Button>
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CarouselNavigation>
+            <ProjectsCarousel projects={projects} />
           </section>
         )}
 
