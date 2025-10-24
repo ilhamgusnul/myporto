@@ -79,7 +79,7 @@ export default async function HomePage() {
 
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
-        <nav className="container mx-auto px-4 py-4">
+        <nav className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl font-bold">Portfolio</Link>
             <div className="flex items-center gap-6">
@@ -93,9 +93,9 @@ export default async function HomePage() {
         </nav>
       </header>
 
-      <main className="container mx-auto px-4 py-12 space-y-24">
+      <main className="container mx-auto px-4 pt-8 pb-12 space-y-16">
         {/* Hero Section */}
-        <section id="hero" className="grid md:grid-cols-2 gap-12 items-center min-h-[80vh]">
+        <section id="hero" className="grid md:grid-cols-2 gap-12 items-center min-h-[75vh]">
           <div className="space-y-6">
             {/* Let's Talk Badge */}
             <div>
