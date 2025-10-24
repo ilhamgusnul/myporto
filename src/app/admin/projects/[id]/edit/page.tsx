@@ -64,41 +64,16 @@ export default async function EditProjectPage({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="category">Category *</Label>
-          <Select name="category" defaultValue={project.category} required>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="WEB_DEV">Web Development</SelectItem>
-              <SelectItem value="MOBILE_APPS">Mobile Apps</SelectItem>
-              <SelectItem value="DESIGN_PROJECTS">Design Projects</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="stack">Tech Stack * (comma separated)</Label>
+          <Label htmlFor="technologies">Tech Stack * (comma separated)</Label>
           <Input
-            id="stack"
-            name="stack"
+            id="technologies"
+            name="technologies"
             required
-            defaultValue={project.stack.join(", ")}
+            defaultValue={project.technologies?.join(", ") || ""}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="completedAt">Completion Date</Label>
-          <Input
-            id="completedAt"
-            name="completedAt"
-            type="date"
-            defaultValue={
-              project.completedAt
-                ? new Date(project.completedAt).toISOString().split("T")[0]
-                : ""
-            }
-          />
+          <p className="text-xs text-muted-foreground">
+            Separate technologies with commas
+          </p>
         </div>
 
         <ImageUpload
@@ -109,12 +84,12 @@ export default async function EditProjectPage({
         />
 
         <div className="space-y-2">
-          <Label htmlFor="liveUrl">Live URL</Label>
+          <Label htmlFor="demoUrl">Live Demo URL</Label>
           <Input
-            id="liveUrl"
-            name="liveUrl"
+            id="demoUrl"
+            name="demoUrl"
             type="url"
-            defaultValue={project.liveUrl || ""}
+            defaultValue={project.demoUrl || ""}
           />
         </div>
 

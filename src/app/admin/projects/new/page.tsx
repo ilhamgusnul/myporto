@@ -48,35 +48,16 @@ export default function NewProjectPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="category">Category *</Label>
-          <Select name="category" defaultValue="WEB_DEV" required>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="WEB_DEV">Web Development</SelectItem>
-              <SelectItem value="MOBILE_APPS">Mobile Apps</SelectItem>
-              <SelectItem value="DESIGN_PROJECTS">Design Projects</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="stack">Tech Stack * (comma separated)</Label>
+          <Label htmlFor="technologies">Tech Stack * (comma separated)</Label>
           <Input
-            id="stack"
-            name="stack"
+            id="technologies"
+            name="technologies"
             required
             placeholder="React, Node.js, PostgreSQL, Tailwind"
           />
           <p className="text-xs text-muted-foreground">
             Separate technologies with commas
           </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="completedAt">Completion Date</Label>
-          <Input id="completedAt" name="completedAt" type="date" />
         </div>
 
         <ImageUpload
@@ -86,10 +67,10 @@ export default function NewProjectPage() {
         />
 
         <div className="space-y-2">
-          <Label htmlFor="liveUrl">Live URL</Label>
+          <Label htmlFor="demoUrl">Live Demo URL</Label>
           <Input
-            id="liveUrl"
-            name="liveUrl"
+            id="demoUrl"
+            name="demoUrl"
             type="url"
             placeholder="https://..."
           />
