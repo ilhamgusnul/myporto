@@ -37,25 +37,27 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
   };
 
   return (
-    <div className="relative group">
-      {/* Navigation Buttons */}
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity -translate-x-1/2"
-        onClick={() => scroll("left")}
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </Button>
+    <div className="relative">
+      {/* Navigation Buttons - Top Right */}
+      <div className="absolute -top-16 right-0 flex gap-2 z-10">
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-white hover:bg-gray-50 shadow-md"
+          onClick={() => scroll("left")}
+        >
+          <ChevronLeft className="h-5 w-5" />
+        </Button>
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm shadow-lg hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity translate-x-1/2"
-        onClick={() => scroll("right")}
-      >
-        <ChevronRight className="h-6 w-6" />
-      </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="bg-white hover:bg-gray-50 shadow-md"
+          onClick={() => scroll("right")}
+        >
+          <ChevronRight className="h-5 w-5" />
+        </Button>
+      </div>
 
       {/* Carousel Container */}
       <div
@@ -69,7 +71,7 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
         {projects.map((project) => (
           <div
             key={project.id}
-            className="flex-none w-[380px] snap-start"
+            className="flex-none w-[350px] snap-start"
           >
             <ProjectCard
               {...project}

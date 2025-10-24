@@ -33,7 +33,7 @@ export function ProjectCard({
 
   return (
     <Card
-      className={`bg-white overflow-hidden transition-all duration-500 ease-out cursor-pointer ${
+      className={`bg-white overflow-hidden transition-all duration-500 ease-out cursor-pointer h-full flex flex-col ${
         isExpanded 
           ? "shadow-2xl scale-[1.02] ring-2 ring-[#ff6b00] ring-opacity-50" 
           : "shadow-lg hover:shadow-xl hover:scale-[1.01]"
@@ -41,7 +41,7 @@ export function ProjectCard({
       onClick={() => onToggle(id)}
     >
       {imageUrl && (
-        <div className="relative h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+        <div className="relative h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
           <Image
             src={imageUrl}
             alt={title}
@@ -56,16 +56,19 @@ export function ProjectCard({
           )}
         </div>
       )}
-      <div className="p-6">
+      <div className="p-6 flex-1 flex flex-col">
         {/* Title & Description - Always Visible */}
         <h3 className={`text-xl font-bold mb-2 transition-colors duration-300 ${
           isExpanded ? "text-[#ff6b00]" : "text-gray-900"
         }`}>
           {title}
         </h3>
-        <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+        <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed text-sm">
           {description}
         </p>
+
+        {/* Spacer untuk mendorong footer ke bawah */}
+        <div className="flex-1" />
 
         {/* Expanded Content - Tech Stack & Links */}
         <div
@@ -111,9 +114,9 @@ export function ProjectCard({
               >
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-[#ff6b00] to-[#ff8533] hover:from-[#e55f00] hover:to-[#ff6b00] w-full shadow-md hover:shadow-lg transition-all"
+                  className="bg-gradient-to-r from-[#ff6b00] to-[#ff8533] hover:from-[#e55f00] hover:to-[#ff6b00] w-full shadow-md hover:shadow-lg transition-all text-xs"
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="h-3 w-3 mr-2" />
                   Live Demo
                 </Button>
               </a>
@@ -129,9 +132,9 @@ export function ProjectCard({
                 <Button 
                   size="sm" 
                   variant="outline" 
-                  className="w-full border-gray-300 hover:border-[#ff6b00] hover:text-[#ff6b00] hover:bg-[#fff5f0] transition-all"
+                  className="w-full border-gray-300 hover:border-[#ff6b00] hover:text-[#ff6b00] hover:bg-[#fff5f0] transition-all text-xs"
                 >
-                  <Github className="h-4 w-4 mr-2" />
+                  <Github className="h-3 w-3 mr-2" />
                   Source Code
                 </Button>
               </a>
