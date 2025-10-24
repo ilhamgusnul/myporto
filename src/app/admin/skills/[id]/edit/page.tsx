@@ -40,40 +40,30 @@ export default async function EditSkillPage({
 
       <form action={updateWithId} className="bg-white p-6 rounded-lg border space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Skill Category *</Label>
+          <Label htmlFor="name">Skill Group Name *</Label>
           <Input
-            id="title"
-            name="title"
+            id="name"
+            name="name"
             required
-            defaultValue={skill.title}
+            defaultValue={skill.name}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="proficiency">Proficiency Level (0-100) *</Label>
+          <Label htmlFor="skills">Skills * (comma separated)</Label>
           <Input
-            id="proficiency"
-            name="proficiency"
-            type="number"
-            min="0"
-            max="100"
+            id="skills"
+            name="skills"
             required
-            defaultValue={skill.proficiency}
+            defaultValue={skill.skills.join(", ")}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="tools">Tools & Technologies * (comma separated)</Label>
-          <Input
-            id="tools"
-            name="tools"
-            required
-            defaultValue={skill.tools.join(", ")}
-          />
+          <p className="text-xs text-muted-foreground">
+            Separate skills with commas
+          </p>
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Update Skill</Button>
+          <Button type="submit">Update Skill Group</Button>
           <Link href="/admin/skills">
             <Button variant="outline" type="button">
               Cancel

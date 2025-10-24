@@ -22,46 +22,30 @@ export default function NewSkillPage() {
 
       <form action={createSkill} className="bg-white p-6 rounded-lg border space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Skill Category *</Label>
+          <Label htmlFor="name">Skill Group Name *</Label>
           <Input
-            id="title"
-            name="title"
+            id="name"
+            name="name"
             required
             placeholder="e.g., Frontend Development, Backend, Design"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="proficiency">Proficiency Level (0-100) *</Label>
+          <Label htmlFor="skills">Skills * (comma separated)</Label>
           <Input
-            id="proficiency"
-            name="proficiency"
-            type="number"
-            min="0"
-            max="100"
-            required
-            defaultValue="80"
-          />
-          <p className="text-xs text-muted-foreground">
-            Enter your proficiency level from 0 to 100
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="tools">Tools & Technologies * (comma separated)</Label>
-          <Input
-            id="tools"
-            name="tools"
+            id="skills"
+            name="skills"
             required
             placeholder="React, Next.js, TypeScript, Tailwind CSS"
           />
           <p className="text-xs text-muted-foreground">
-            Separate tools with commas
+            Separate skills with commas
           </p>
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Create Skill</Button>
+          <Button type="submit">Create Skill Group</Button>
           <Link href="/admin/skills">
             <Button variant="outline" type="button">
               Cancel
