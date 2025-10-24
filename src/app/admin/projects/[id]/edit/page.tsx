@@ -6,15 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 import ImageUpload from "@/components/admin/image-upload";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function EditProjectPage({
   params,
@@ -104,7 +98,7 @@ export default async function EditProjectPage({
         </div>
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Update Project</Button>
+          <SubmitButton>Update Project</SubmitButton>
           <Link href="/admin/projects">
             <Button variant="outline" type="button">
               Cancel
