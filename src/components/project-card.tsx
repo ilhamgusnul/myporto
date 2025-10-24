@@ -34,10 +34,10 @@ export function ProjectCard({
   return (
     <div className="relative h-full">
       <Card
-        className={`bg-white overflow-hidden transition-all duration-300 ease-out cursor-pointer h-full flex flex-col ${
+        className={`bg-white overflow-visible transition-all duration-300 ease-out cursor-pointer flex flex-col ${
           isExpanded 
             ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 relative z-50" 
-            : "shadow-lg hover:shadow-xl"
+            : "shadow-lg hover:shadow-xl h-full"
         }`}
         onClick={() => onToggle(id)}
         style={
@@ -46,8 +46,8 @@ export function ProjectCard({
                 position: "absolute",
                 top: 0,
                 left: 0,
-                width: "450px",
-                maxHeight: "700px",
+                width: "100%",
+                minHeight: "600px",
               }
             : {}
         }
@@ -75,12 +75,14 @@ export function ProjectCard({
         }`}>
           {title}
         </h3>
-        <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed text-sm">
+        <p className={`text-gray-600 mb-4 leading-relaxed text-sm ${
+          isExpanded ? "" : "line-clamp-3"
+        }`}>
           {description}
         </p>
 
-        {/* Spacer untuk mendorong footer ke bawah */}
-        <div className="flex-1" />
+        {/* Spacer untuk mendorong footer ke bawah - hanya saat tidak expanded */}
+        {!isExpanded && <div className="flex-1" />}
 
         {/* Expanded Content - Tech Stack & Links */}
         <div
