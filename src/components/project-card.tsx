@@ -32,14 +32,26 @@ export function ProjectCard({
   const isExpanded = expandedId === id;
 
   return (
-    <Card
-      className={`bg-white overflow-hidden transition-all duration-500 ease-out cursor-pointer h-full flex flex-col ${
-        isExpanded 
-          ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50" 
-          : "shadow-lg hover:shadow-xl"
-      }`}
-      onClick={() => onToggle(id)}
-    >
+    <div className="relative h-full">
+      <Card
+        className={`bg-white overflow-hidden transition-all duration-300 ease-out cursor-pointer h-full flex flex-col ${
+          isExpanded 
+            ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 relative z-50" 
+            : "shadow-lg hover:shadow-xl"
+        }`}
+        onClick={() => onToggle(id)}
+        style={
+          isExpanded
+            ? {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "450px",
+                maxHeight: "700px",
+              }
+            : {}
+        }
+      >
       {imageUrl && (
         <div className="relative h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
           <Image
@@ -165,5 +177,6 @@ export function ProjectCard({
         }
       `}</style>
     </Card>
+    </div>
   );
 }

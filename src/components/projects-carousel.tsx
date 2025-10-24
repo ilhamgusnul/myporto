@@ -89,7 +89,12 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
         {projects.map((project) => (
           <div
             key={project.id}
-            className="flex-none w-[350px] snap-start"
+            className={`flex-none snap-start ${
+              expandedId === project.id ? "w-[450px]" : "w-[350px]"
+            }`}
+            style={{
+              transition: "width 0.3s ease-out",
+            }}
           >
             <ProjectCard
               {...project}
