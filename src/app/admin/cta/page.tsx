@@ -39,72 +39,48 @@ export default async function CTAPage() {
 
       <form action={updateWithId} className="bg-white p-6 rounded-lg border space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="heading">Heading *</Label>
+          <Label htmlFor="title">Title *</Label>
           <Input
-            id="heading"
-            name="heading"
+            id="title"
+            name="title"
             required
-            defaultValue={cta.heading}
+            defaultValue={cta.title}
             placeholder="Ready to Start Your Project?"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="subheading">Subheading *</Label>
+          <Label htmlFor="description">Description *</Label>
           <Textarea
-            id="subheading"
-            name="subheading"
+            id="description"
+            name="description"
             required
-            defaultValue={cta.subheading}
+            defaultValue={cta.description}
             rows={3}
             placeholder="Let's work together to bring your ideas to life..."
           />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="primaryText">Primary Button Text *</Label>
-            <Input
-              id="primaryText"
-              name="primaryText"
-              required
-              defaultValue={cta.primaryText}
-              placeholder="Get In Touch"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="primaryHref">Primary Button Link *</Label>
-            <Input
-              id="primaryHref"
-              name="primaryHref"
-              required
-              defaultValue={cta.primaryHref}
-              placeholder="#contact"
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="buttonText">Button Text *</Label>
+          <Input
+            id="buttonText"
+            name="buttonText"
+            required
+            defaultValue={cta.buttonText}
+            placeholder="Get In Touch"
+          />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="secondaryText">Secondary Button Text</Label>
-            <Input
-              id="secondaryText"
-              name="secondaryText"
-              defaultValue={cta.secondaryText || ""}
-              placeholder="View Projects"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="secondaryHref">Secondary Button Link</Label>
-            <Input
-              id="secondaryHref"
-              name="secondaryHref"
-              defaultValue={cta.secondaryHref || ""}
-              placeholder="#projects"
-            />
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="buttonLink">Button Link *</Label>
+          <Input
+            id="buttonLink"
+            name="buttonLink"
+            required
+            defaultValue={cta.buttonLink}
+            placeholder="#contact"
+          />
         </div>
 
         <div className="flex gap-2 pt-4">

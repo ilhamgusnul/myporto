@@ -32,10 +32,10 @@ export default function NewPlatformPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="profileUrl">Profile URL *</Label>
+          <Label htmlFor="url">Profile URL *</Label>
           <Input
-            id="profileUrl"
-            name="profileUrl"
+            id="url"
+            name="url"
             type="url"
             required
             placeholder="https://github.com/yourusername"
@@ -43,22 +43,17 @@ export default function NewPlatformPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="tagline">Tagline (optional)</Label>
+          <Label htmlFor="icon">Icon Name *</Label>
           <Input
-            id="tagline"
-            name="tagline"
-            placeholder="Check out my projects"
+            id="icon"
+            name="icon"
+            required
+            defaultValue="Globe"
+            placeholder="e.g., Github, Linkedin, Twitter"
           />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="logoUrl">Logo URL (optional)</Label>
-          <Input
-            id="logoUrl"
-            name="logoUrl"
-            type="url"
-            placeholder="https://..."
-          />
+          <p className="text-xs text-muted-foreground">
+            Lucide icon name (e.g., Github, Linkedin, Twitter, Facebook, Instagram)
+          </p>
         </div>
 
         <div className="flex gap-2 pt-4">
