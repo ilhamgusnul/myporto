@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe, Code, Palette, Smartphone, Server, Cloud, MessageSquare, Briefcase, Layers, Lightbulb, Zap } from "lucide-react";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { CarouselNavigation } from "@/components/carousel-navigation";
+import { ContactForm } from "@/components/contact-form";
 import * as LucideIcons from "lucide-react";
 
 // Icon mapping for social media and services
@@ -31,51 +32,6 @@ const iconMap = {
   Lightbulb,
   Zap,
 };
-
-async function ContactForm() {
-  async function handleSubmit(formData: FormData) {
-    "use server";
-    
-    const data = {
-      name: String(formData.get("name") || ""),
-      email: String(formData.get("email") || ""),
-      subject: String(formData.get("subject") || "General Inquiry"),
-      message: String(formData.get("message") || ""),
-    };
-
-    try {
-      const { error } = await supabase.from("Message").insert([data]);
-      
-      if (error) {
-        console.error("Failed to send message:", error);
-        throw error;
-      }
-      
-      console.log("Message sent successfully");
-    } catch (error) {
-      console.error("Contact form error:", error);
-      throw new Error("Failed to send message");
-    }
-  }
-
-  return (
-    <form action={handleSubmit} className="grid gap-4">
-      <div className="grid gap-2">
-        <Input name="name" placeholder="Your Name" required />
-      </div>
-      <div className="grid gap-2">
-        <Input name="email" type="email" placeholder="your@email.com" required />
-      </div>
-      <div className="grid gap-2">
-        <Input name="subject" placeholder="Subject" defaultValue="General Inquiry" />
-      </div>
-      <div className="grid gap-2">
-        <Textarea name="message" placeholder="Your message..." rows={5} required />
-      </div>
-      <Button type="submit" className="bg-[#ff6b00] hover:bg-[#e55f00]">Send Message</Button>
-    </form>
-  );
-}
 
 export default async function HomePage() {
   const [
@@ -217,7 +173,7 @@ export default async function HomePage() {
                 return (
                   <Card 
                     key={service.id} 
-                    className="hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-none bg-white"
+                    className="shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border bg-white"
                   >
                     <CardContent className="p-8 space-y-4">
                       <div className="w-16 h-16 rounded-2xl bg-[#ff6b00]/10 flex items-center justify-center">
@@ -246,7 +202,7 @@ export default async function HomePage() {
               {skills.map((skill) => (
                 <Card 
                   key={skill.id} 
-                  className="hover:shadow-xl transition-all duration-300 border-none bg-white"
+                  className="shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border bg-white"
                 >
                   <CardContent className="p-8 space-y-4">
                     <h3 className="text-xl font-bold">{skill.name}</h3>
@@ -282,7 +238,7 @@ export default async function HomePage() {
                 <div className="flex gap-6 pb-4">
                   {projects.map((project) => (
                     <div key={project.id} className="flex-none w-[350px] snap-start">
-                      <Card className="h-full hover:shadow-xl transition-shadow">
+                      <Card className="h-full shadow-lg hover:shadow-2xl transition-all duration-300 border">
                         <div className="relative aspect-video overflow-hidden">
                           <Image
                             src={project.imageUrl || "/placeholder.jpg"}
@@ -365,7 +321,7 @@ export default async function HomePage() {
                   rel="noopener noreferrer"
                   className="group"
                 >
-                  <Card className="hover:shadow-lg transition-shadow">
+                  <Card className="shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 border">
                     <CardContent className="p-6 text-center space-y-2">
                       <div className="font-semibold text-lg group-hover:text-primary transition-colors">
                         {platform.name}
