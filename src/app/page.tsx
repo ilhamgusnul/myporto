@@ -33,8 +33,33 @@ const iconMap = {
 };
 
 async function ContactForm() {
+  async function handleSubmit(formData: FormData) {
+    "use server";
+    
+    const data = {
+      name: String(formData.get("name") || ""),
+      email: String(formData.get("email") || ""),
+      subject: String(formData.get("subject") || "General Inquiry"),
+      message: String(formData.get("message") || ""),
+    };
+
+    try {
+      const { error } = await supabase.from("Message").insert([data]);
+      
+      if (error) {
+        console.error("Failed to send message:", error);
+        throw error;
+      }
+      
+      return { success: true };
+    } catch (error) {
+      console.error("Contact form error:", error);
+      return { success: false, error: "Failed to send message" };
+    }
+  }
+
   return (
-    <form action="/api/contact" method="post" className="grid gap-4">
+    <form action={handleSubmit} className="grid gap-4">
       <div className="grid gap-2">
         <Input name="name" placeholder="Your Name" required />
       </div>
@@ -42,9 +67,12 @@ async function ContactForm() {
         <Input name="email" type="email" placeholder="your@email.com" required />
       </div>
       <div className="grid gap-2">
+        <Input name="subject" placeholder="Subject" defaultValue="General Inquiry" />
+      </div>
+      <div className="grid gap-2">
         <Textarea name="message" placeholder="Your message..." rows={5} required />
       </div>
-      <Button type="submit">Send Message</Button>
+      <Button type="submit" className="bg-[#ff6b00] hover:bg-[#e55f00]">Send Message</Button>
     </form>
   );
 }
@@ -319,23 +347,18 @@ export default async function HomePage() {
         {/* CTA Section - Let's Work Together */}
         {cta && (
           <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-12 md:p-16 text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Let&apos;s Work Together</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              {cta.title || "Let's Work Together"}
+            </h2>
             <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto">
-              {cta.subheading || "Have a project in mind? Let&apos;s discuss how I can help bring your ideas to life."}
+              {cta.description || "Have a project in mind? Let's discuss how I can help bring your ideas to life."}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-              <a href={cta.primaryHref || "#contact"}>
+              <a href={cta.buttonLink || "#contact"}>
                 <Button size="lg" className="bg-white text-black hover:bg-gray-100 px-8 py-6 text-base font-semibold">
-                  {cta.primaryText || "Start a Project"}
+                  {cta.buttonText || "Get In Touch"}
                 </Button>
               </a>
-              {cta.secondaryText && cta.secondaryHref && (
-                <a href={cta.secondaryHref}>
-                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-base font-semibold">
-                    {cta.secondaryText}
-                  </Button>
-                </a>
-              )}
             </div>
           </section>
         )}
@@ -351,7 +374,7 @@ export default async function HomePage() {
               {platforms.map((platform) => (
                 <a
                   key={platform.id}
-                  href={platform.profileUrl}
+                  href={platform.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group"
@@ -361,9 +384,6 @@ export default async function HomePage() {
                       <div className="font-semibold text-lg group-hover:text-primary transition-colors">
                         {platform.name}
                       </div>
-                      {platform.tagline && (
-                        <p className="text-sm text-muted-foreground">{platform.tagline}</p>
-                      )}
                     </CardContent>
                   </Card>
                 </a>
@@ -409,18 +429,18 @@ export default async function HomePage() {
                 </div>
               )}
 
-              {contact?.whatsapp && (
+              {contact?.phone && (
                 <div className="flex items-start gap-3">
                   <Phone className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <div className="font-medium">WhatsApp</div>
+                    <div className="font-medium">Phone</div>
                     <a
-                      href={`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`}
+                      href={`https://wa.me/${contact.phone.replace(/[^0-9]/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {contact.whatsapp}
+                      {contact.phone}
                     </a>
                   </div>
                 </div>
