@@ -248,31 +248,17 @@ export default async function HomePage() {
                   key={skill.id} 
                   className="hover:shadow-xl transition-all duration-300 border-none bg-white"
                 >
-                  <CardContent className="p-8 space-y-6">
-                    <h3 className="text-xl font-bold">{skill.title}</h3>
+                  <CardContent className="p-8 space-y-4">
+                    <h3 className="text-xl font-bold">{skill.name}</h3>
                     
-                    {/* Proficiency Bar */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">Proficiency</span>
-                        <span className="font-bold">{skill.proficiency}%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div
-                          className="bg-[#ff6b00] h-2 rounded-full transition-all duration-500"
-                          style={{ width: `${skill.proficiency}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Tools */}
+                    {/* Skills */}
                     <div className="flex flex-wrap gap-2">
-                      {skill.tools.map((tool: string) => (
+                      {skill.skills?.map((item: string) => (
                         <span
-                          key={tool}
+                          key={item}
                           className="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md font-medium"
                         >
-                          {tool}
+                          {item}
                         </span>
                       ))}
                     </div>
