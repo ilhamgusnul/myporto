@@ -1,10 +1,10 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { updateAbout } from "./actions";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/admin/image-upload";
+import { SubmitButton } from "@/components/admin/submit-button";
 
 export default async function AboutPage() {
   const { data: about } = await supabaseAdmin
@@ -40,33 +40,36 @@ export default async function AboutPage() {
 
       <form action={updateWithId} className="bg-white p-6 rounded-lg border space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Title *</Label>
+          <Label htmlFor="title">Title * (Full Name)</Label>
           <Input
             id="title"
             name="title"
             required
-            defaultValue={about.title}
-            placeholder="Full Stack Developer"
+            defaultValue={about.title || ""}
+            placeholder="Ilham Gusnul Romadhon"
           />
+          <p className="text-xs text-muted-foreground">
+            First 2 words will be displayed in orange
+          </p>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="subtitle">Subtitle *</Label>
+          <Label htmlFor="subtitle">Subtitle * (Role/Position)</Label>
           <Input
             id="subtitle"
             name="subtitle"
             required
-            defaultValue={about.subtitle}
-            placeholder="Building digital experiences..."
+            defaultValue={about.subtitle || ""}
+            placeholder="Full Stack Developer & Designer"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="tagline">Tagline</Label>
+          <Label htmlFor="tagline">Tagline (Motto)</Label>
           <Input
             id="tagline"
             name="tagline"
-            defaultValue={about.tagline}
+            defaultValue={about.tagline || ""}
             placeholder="Code by Logic, Design with Passion"
           />
           <p className="text-xs text-muted-foreground">
@@ -75,17 +78,17 @@ export default async function AboutPage() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="content">Content *</Label>
+          <Label htmlFor="content">Content * (About Description)</Label>
           <Textarea
             id="content"
             name="content"
             required
-            defaultValue={about.content}
+            defaultValue={about.content || ""}
             rows={8}
-            placeholder="Tell your story..."
+            placeholder="Tell your story... Describe your expertise, experience, and what you do."
           />
           <p className="text-xs text-muted-foreground">
-            You can use markdown format here
+            Full description displayed in hero section
           </p>
         </div>
 
@@ -97,7 +100,7 @@ export default async function AboutPage() {
         />
 
         <div className="flex gap-2 pt-4">
-          <Button type="submit">Save Changes</Button>
+          <SubmitButton>Save Changes</SubmitButton>
         </div>
       </form>
     </div>
