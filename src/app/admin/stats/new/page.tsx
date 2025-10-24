@@ -1,6 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase";
-import { notFound } from "next/navigation";
-import { updateStat } from "../../actions";
+import { createStat } from "../actions";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,23 +6,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import { SubmitButton } from "@/components/admin/submit-button";
 
-export default async function EditStatPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const { data: stat } = await supabaseAdmin
-    .from("Stat")
-    .select("*")
-    .eq("id", params.id)
-    .single();
-
-  if (!stat) {
-    return <div>Stat not found</div>;
-  }
-
-  const updateWithId = updateStat.bind(null, params.id);
-
+export default function NewStatPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-4">
@@ -34,19 +16,18 @@ export default async function EditStatPage({
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Edit Stat</h1>
-          <p className="text-muted-foreground mt-1">Update statistic value</p>
+          <h1 className="text-3xl font-bold">Add New Stat</h1>
+          <p className="text-muted-foreground mt-1">Create a new statistic</p>
         </div>
       </div>
 
-      <form action={updateWithId} className="bg-white p-6 rounded-lg border space-y-4">
+      <form action={createStat} className="bg-white p-6 rounded-lg border space-y-4">
         <div className="space-y-2">
           <Label htmlFor="label">Label *</Label>
           <Input
             id="label"
             name="label"
             required
-            defaultValue={stat.label}
             placeholder="e.g., Projects Completed, Happy Clients"
           />
         </div>
@@ -57,7 +38,6 @@ export default async function EditStatPage({
             id="value"
             name="value"
             required
-            defaultValue={stat.value}
             placeholder="e.g., 50, 100"
           />
           <p className="text-xs text-muted-foreground">
@@ -71,7 +51,7 @@ export default async function EditStatPage({
             id="order"
             name="order"
             type="number"
-            defaultValue={stat.order || 0}
+            defaultValue="0"
             placeholder="0"
           />
           <p className="text-xs text-muted-foreground">
@@ -80,7 +60,7 @@ export default async function EditStatPage({
         </div>
 
         <div className="flex gap-2 pt-4">
-          <SubmitButton>Update Stat</SubmitButton>
+          <SubmitButton>Create Stat</SubmitButton>
           <Link href="/admin/stats">
             <Button variant="outline" type="button">
               Cancel
