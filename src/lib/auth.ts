@@ -8,6 +8,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
       name: "Credentials",
@@ -18,37 +19,47 @@ export const authOptions: NextAuthOptions = {
       async authorize(creds) {
         if (!creds?.email || !creds.password) return null;
         
-        // Create Supabase Auth client
-        const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false
-          }
-        });
+        // Skip auth in build time
+        if (supabaseUrl === 'https://placeholder.supabase.co') {
+          return null;
+        }
         
-        // Try to sign in with Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-          email: creds.email,
-          password: creds.password,
-        });
-        
-        if (authError || !authData.user) return null;
-        
-        // Get profile data
-        const { data: profile } = await supabaseAdmin
-          .from("Profile")
-          .select("*")
-          .eq("id", authData.user.id)
-          .single();
-        
-        if (!profile) return null;
-        
-        return { 
-          id: profile.id, 
-          email: profile.email, 
-          name: profile.name,
-          role: profile.role
-        } as any;
+        try {
+          // Create Supabase Auth client
+          const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+            auth: {
+              autoRefreshToken: false,
+              persistSession: false
+            }
+          });
+          
+          // Try to sign in with Supabase Auth
+          const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: creds.email,
+            password: creds.password,
+          });
+          
+          if (authError || !authData.user) return null;
+          
+          // Get profile data
+          const { data: profile } = await supabaseAdmin
+            .from("Profile")
+            .select("*")
+            .eq("id", authData.user.id)
+            .single();
+          
+          if (!profile) return null;
+          
+          return { 
+            id: profile.id, 
+            email: profile.email, 
+            name: profile.name,
+            role: profile.role
+          } as any;
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
+        }
       },
     }),
   ],
@@ -70,5 +81,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+    error: "/login", // Redirect errors to login page instead of showing error page
   },
+  debug: process.env.NODE_ENV === 'development',
 };
