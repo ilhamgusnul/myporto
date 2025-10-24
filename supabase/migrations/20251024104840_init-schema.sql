@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS "About" (
     subtitle TEXT NOT NULL,
     tagline TEXT,
     content TEXT NOT NULL,
-    "imageUrl" TEXT,
+    "avatarUrl" TEXT,
     "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
