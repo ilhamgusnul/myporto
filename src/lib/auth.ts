@@ -6,9 +6,15 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
 
+// Get NEXTAUTH_SECRET with fallback for build time
+const nextAuthSecret = process.env.NEXTAUTH_SECRET || 
+  (process.env.NODE_ENV === 'production' 
+    ? undefined 
+    : 'development-secret-change-in-production');
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: nextAuthSecret,
   providers: [
     Credentials({
       name: "Credentials",
