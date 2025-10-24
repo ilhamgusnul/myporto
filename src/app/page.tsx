@@ -281,7 +281,7 @@ export default async function HomePage() {
                           <h3 className="text-xl font-bold mb-2">{project.title}</h3>
                           <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
                           <div className="flex gap-2 mb-4 flex-wrap">
-                            {project.stack.slice(0, 3).map((tech: string, i: number) => (
+                            {project.technologies?.slice(0, 3).map((tech: string, i: number) => (
                               <span
                                 key={i}
                                 className="px-3 py-1 bg-gray-100 text-xs rounded-full"
@@ -291,8 +291,8 @@ export default async function HomePage() {
                             ))}
                           </div>
                           <div className="flex gap-2">
-                            {project.liveUrl && (
-                              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                            {project.demoUrl && (
+                              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
                                 <Button size="sm" className="bg-[#ff6b00] hover:bg-[#e55f00]">
                                   Live Demo
                                 </Button>
