@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -6,9 +6,10 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { deleteService } from "./actions";
 
 export default async function ServicesPage() {
-  const services = await prisma.service.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: services } = await supabaseAdmin
+    .from("Service")
+    .select("*")
+    .order("order");
 
   return (
     <div className="space-y-6">
@@ -26,7 +27,7 @@ export default async function ServicesPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((service) => (
+        {services?.map((service) => (
           <Card key={service.id}>
             <CardHeader>
               <CardTitle>{service.title}</CardTitle>
@@ -51,7 +52,7 @@ export default async function ServicesPage() {
         ))}
       </div>
 
-      {services.length === 0 && (
+      {(!services || services.length === 0) && (
         <Card>
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground">No services yet. Click &quot;Add Service&quot; to create one.</p>

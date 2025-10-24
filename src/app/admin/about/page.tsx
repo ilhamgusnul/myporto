@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { updateAbout } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/admin/image-upload";
 
 export default async function AboutPage() {
-  const about = await prisma.about.findFirst();
+  const { data: about } = await supabaseAdmin
+    .from("About")
+    .select("*")
+    .limit(1)
+    .single();
 
   if (!about) {
     return (

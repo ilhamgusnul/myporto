@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -13,9 +13,10 @@ import {
 import { DeleteSkillButton } from "./delete-button";
 
 export default async function SkillsPage() {
-  const skills = await prisma.skillGroup.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: skills } = await supabaseAdmin
+    .from("SkillGroup")
+    .select("*")
+    .order("order");
 
   return (
     <div className="space-y-6">
@@ -32,7 +33,7 @@ export default async function SkillsPage() {
         </Link>
       </div>
 
-      {skills.length === 0 ? (
+      {!skills || skills.length === 0 ? (
         <div className="text-center py-12 border rounded-lg bg-white">
           <p className="text-muted-foreground">No skills yet</p>
           <Link href="/admin/skills/new">
@@ -70,7 +71,7 @@ export default async function SkillsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap max-w-md">
-                      {skill.tools.slice(0, 4).map((tool, i) => (
+                      {skill.tools.slice(0, 4).map((tool: string, i: number) => (
                         <span
                           key={i}
                           className="text-xs bg-slate-100 px-2 py-1 rounded"

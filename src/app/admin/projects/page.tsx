@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -13,9 +13,10 @@ import {
 import { DeleteProjectButton } from "./delete-button";
 
 export default async function ProjectsPage() {
-  const projects = await prisma.project.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: projects } = await supabaseAdmin
+    .from("Project")
+    .select("*")
+    .order("createdAt", { ascending: false });
 
   return (
     <div className="space-y-6">
@@ -34,7 +35,7 @@ export default async function ProjectsPage() {
         </Link>
       </div>
 
-      {projects.length === 0 ? (
+      {!projects || projects.length === 0 ? (
         <div className="text-center py-12 border rounded-lg bg-white">
           <p className="text-muted-foreground">No projects yet</p>
           <Link href="/admin/projects/new">
@@ -63,7 +64,7 @@ export default async function ProjectsPage() {
                   <TableCell>{project.category.replace(/_/g, " ")}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap">
-                      {project.stack.slice(0, 3).map((tech, i) => (
+                      {project.stack.slice(0, 3).map((tech: string, i: number) => (
                         <span
                           key={i}
                           className="text-xs bg-slate-100 px-2 py-1 rounded"

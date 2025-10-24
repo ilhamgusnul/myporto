@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -50,16 +50,26 @@ async function ContactForm() {
 }
 
 export default async function HomePage() {
-  const [stats, about, services, skills, projects, platforms, cta, contact, socials] = await Promise.all([
-    prisma.stat.findMany(),
-    prisma.about.findFirst(),
-    prisma.service.findMany(),
-    prisma.skillGroup.findMany(),
-    prisma.project.findMany({ orderBy: { createdAt: "desc" }, take: 6 }),
-    prisma.platform.findMany(),
-    prisma.cTA.findFirst(),
-    prisma.contactInfo.findFirst(),
-    prisma.socialMedia.findMany({ orderBy: { order: "asc" } }),
+  const [
+    { data: stats }, 
+    { data: about }, 
+    { data: services }, 
+    { data: skills }, 
+    { data: projects }, 
+    { data: platforms }, 
+    { data: cta }, 
+    { data: contact }, 
+    { data: socials }
+  ] = await Promise.all([
+    supabase.from("Stat").select("*").order("order"),
+    supabase.from("About").select("*").limit(1).single(),
+    supabase.from("Service").select("*").order("order"),
+    supabase.from("SkillGroup").select("*").order("order"),
+    supabase.from("Project").select("*").order("createdAt", { ascending: false }).limit(6),
+    supabase.from("Platform").select("*").order("order"),
+    supabase.from("CTA").select("*").limit(1).single(),
+    supabase.from("ContactInfo").select("*").limit(1).single(),
+    supabase.from("SocialMedia").select("*").order("order"),
   ]);
 
   return (
@@ -118,7 +128,7 @@ export default async function HomePage() {
             </p>
 
             {/* Stats */}
-            {stats.length > 0 && (
+            {stats && stats.length > 0 && (
               <div className="grid grid-cols-3 gap-8 pt-4">
                 {stats.map((stat) => (
                   <div key={stat.id}>
@@ -165,7 +175,7 @@ export default async function HomePage() {
         </section>
 
         {/* Services Section - What I Do */}
-        {services.length > 0 && (
+        {services && services.length > 0 && (
           <section id="services" className="space-y-12">
             <div className="text-center space-y-3">
               <h2 className="text-4xl md:text-5xl font-bold">What I Do</h2>
@@ -196,7 +206,7 @@ export default async function HomePage() {
         )}
 
         {/* Skills Section */}
-        {skills.length > 0 && (
+        {skills && skills.length > 0 && (
           <section id="skills" className="space-y-12">
             <div className="text-center space-y-3">
               <h2 className="text-4xl md:text-5xl font-bold">Let&apos;s Explore My Skills</h2>
@@ -229,7 +239,7 @@ export default async function HomePage() {
 
                     {/* Tools */}
                     <div className="flex flex-wrap gap-2">
-                      {skill.tools.map((tool) => (
+                      {skill.tools.map((tool: string) => (
                         <span
                           key={tool}
                           className="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md font-medium"
@@ -246,7 +256,7 @@ export default async function HomePage() {
         )}
 
         {/* Projects Section with Carousel */}
-        {projects.length > 0 && (
+        {projects && projects.length > 0 && (
           <section id="projects" className="py-20">
             <div className="mb-12">
               <h2 className="text-4xl font-bold mb-4">Featured Projects</h2>
@@ -271,7 +281,7 @@ export default async function HomePage() {
                           <h3 className="text-xl font-bold mb-2">{project.title}</h3>
                           <p className="text-gray-600 mb-4 line-clamp-2">{project.description}</p>
                           <div className="flex gap-2 mb-4 flex-wrap">
-                            {project.stack.slice(0, 3).map((tech, i) => (
+                            {project.stack.slice(0, 3).map((tech: string, i: number) => (
                               <span
                                 key={i}
                                 className="px-3 py-1 bg-gray-100 text-xs rounded-full"
@@ -331,7 +341,7 @@ export default async function HomePage() {
         )}
 
         {/* Platforms Section */}
-        {platforms.length > 0 && (
+        {platforms && platforms.length > 0 && (
           <section id="platforms" className="space-y-8">
             <div className="text-center space-y-2">
               <h2 className="text-3xl font-bold">Find Me On</h2>
@@ -447,7 +457,7 @@ export default async function HomePage() {
 
             {/* Social Icons */}
             <div className="flex items-center justify-center gap-4 pt-2">
-              {socials.map((social) => {
+              {socials?.map((social) => {
                 const IconComponent = iconMap[social.icon as keyof typeof iconMap];
                 return (
                   <a

@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { redirect } from "next/navigation";
 import { updateProfile, updatePassword } from "./actions";
 import { Button } from "@/components/ui/button";
@@ -15,16 +15,18 @@ export default async function ProfilePage() {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
+  const { data: profile } = await supabaseAdmin
+    .from("Profile")
+    .select("*")
+    .eq("email", session.user.email)
+    .single();
 
-  if (!user) {
+  if (!profile) {
     redirect("/login");
   }
 
-  const updateProfileWithId = updateProfile.bind(null, user.id);
-  const updatePasswordWithId = updatePassword.bind(null, user.id);
+  const updateProfileWithId = updateProfile.bind(null, profile.id);
+  const updatePasswordWithId = updatePassword.bind(null, profile.id);
 
   return (
     <div className="max-w-2xl space-y-6">
@@ -45,7 +47,7 @@ export default async function ProfilePage() {
               <Input
                 id="name"
                 name="name"
-                defaultValue={user.name || ""}
+                defaultValue={profile.name || ""}
                 placeholder="Your Name"
               />
             </div>
@@ -57,7 +59,7 @@ export default async function ProfilePage() {
                 name="email"
                 type="email"
                 required
-                defaultValue={user.email}
+                defaultValue={profile.email}
                 placeholder="your@email.com"
               />
             </div>
@@ -122,15 +124,15 @@ export default async function ProfilePage() {
         <CardContent className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Account Created:</span>
-            <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+            <span>{new Date(profile.createdAt).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Last Updated:</span>
-            <span>{new Date(user.updatedAt).toLocaleDateString()}</span>
+            <span>{new Date(profile.updatedAt).toLocaleDateString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">Role:</span>
-            <span className="font-medium">{user.role}</span>
+            <span className="font-medium">{profile.role}</span>
           </div>
         </CardContent>
       </Card>

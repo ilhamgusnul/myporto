@@ -1,23 +1,22 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function updateCTA(id: string, formData: FormData) {
   const data = {
-    heading: String(formData.get("heading") || ""),
-    subheading: String(formData.get("subheading") || ""),
-    primaryText: String(formData.get("primaryText") || ""),
-    primaryHref: String(formData.get("primaryHref") || ""),
-    secondaryText: String(formData.get("secondaryText") || "") || null,
-    secondaryHref: String(formData.get("secondaryHref") || "") || null,
+    title: String(formData.get("title") || ""),
+    description: String(formData.get("description") || ""),
+    buttonText: String(formData.get("buttonText") || ""),
+    buttonLink: String(formData.get("buttonLink") || ""),
   };
 
-  await prisma.cTA.update({
-    where: { id },
-    data,
-  });
+  const { error } = await supabaseAdmin.from("CTA").update(data).eq("id", id);
+
+  if (error) {
+    console.error("Failed to update CTA:", error);
+  }
 
   revalidatePath("/admin/cta");
   revalidatePath("/");

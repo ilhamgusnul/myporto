@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,9 +13,10 @@ import { DeleteSocialButton } from "./delete-button";
 import { ExternalLink } from "lucide-react";
 
 export default async function SocialsPage() {
-  const socials = await prisma.socialMedia.findMany({
-    orderBy: { order: "asc" },
-  });
+  const { data: socials } = await supabaseAdmin
+    .from("SocialMedia")
+    .select("*")
+    .order("order");
 
   return (
     <div className="space-y-6">
@@ -41,7 +42,7 @@ export default async function SocialsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {socials.length === 0 ? (
+            {!socials || socials.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center text-gray-500">
                   No social media links yet

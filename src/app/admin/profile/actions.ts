@@ -1,9 +1,12 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import bcrypt from "bcrypt";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export async function updateProfile(id: string, formData: FormData) {
   const name = String(formData.get("name") || "") || null;
@@ -13,13 +16,34 @@ export async function updateProfile(id: string, formData: FormData) {
     throw new Error("Email is required");
   }
 
-  await prisma.user.update({
-    where: { id },
-    data: {
-      name,
-      email,
-    },
+  // Update Profile table
+  const { error: profileError } = await supabaseAdmin.from("Profile").update({
+    name,
+    email,
+    updatedAt: new Date().toISOString(),
+  }).eq("id", id);
+
+  if (profileError) {
+    console.error("Failed to update profile:", profileError);
+    throw new Error("Failed to update profile");
+  }
+
+  // Update auth.users email if changed
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
   });
+
+  const { error: authError } = await supabase.auth.admin.updateUserById(id, {
+    email,
+    user_metadata: { name }
+  });
+
+  if (authError) {
+    console.error("Failed to update auth user:", authError);
+  }
 
   revalidatePath("/admin/profile");
   redirect("/admin/profile");
@@ -42,30 +66,40 @@ export async function updatePassword(id: string, formData: FormData) {
     throw new Error("Password must be at least 8 characters");
   }
 
-  // Get current user
-  const user = await prisma.user.findUnique({ where: { id } });
+  // Get profile
+  const { data: profile } = await supabaseAdmin.from("Profile").select("email").eq("id", id).single();
 
-  if (!user) {
-    throw new Error("User not found");
+  if (!profile) {
+    throw new Error("Profile not found");
   }
 
-  // Verify current password
-  const isValid = await bcrypt.compare(currentPassword, user.password);
+  // Create Supabase client for auth operations
+  const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
 
-  if (!isValid) {
+  // Verify current password by attempting sign in
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: profile.email,
+    password: currentPassword,
+  });
+
+  if (signInError) {
     throw new Error("Current password is incorrect");
   }
 
-  // Hash new password
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  // Update password
-  await prisma.user.update({
-    where: { id },
-    data: {
-      password: hashedPassword,
-    },
+  // Update password using Supabase Auth Admin API
+  const { error: updateError } = await supabase.auth.admin.updateUserById(id, {
+    password: newPassword
   });
+
+  if (updateError) {
+    console.error("Failed to update password:", updateError);
+    throw new Error("Failed to update password");
+  }
 
   revalidatePath("/admin/profile");
   redirect("/admin/profile");

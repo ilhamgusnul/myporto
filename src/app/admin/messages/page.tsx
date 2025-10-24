@@ -1,9 +1,10 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export default async function MessagesPage() {
-  const messages = await prisma.message.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: messages } = await supabaseAdmin
+    .from("Message")
+    .select("*")
+    .order("createdAt", { ascending: false });
 
   return (
     <div className="space-y-6">
@@ -14,7 +15,7 @@ export default async function MessagesPage() {
         </p>
       </div>
 
-      {messages.length === 0 ? (
+      {!messages || messages.length === 0 ? (
         <div className="bg-white p-12 rounded-lg border text-center">
           <p className="text-muted-foreground">No messages yet</p>
         </div>

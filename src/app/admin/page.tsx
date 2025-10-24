@@ -1,34 +1,35 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FolderKanban, Briefcase, Award, MessageSquare, Share2 } from "lucide-react";
 
 export default async function AdminDashboard() {
   const [
-    projectCount,
-    serviceCount,
-    skillCount,
-    messageCount,
-    platformCount,
+    { count: projectCount },
+    { count: serviceCount },
+    { count: skillCount },
+    { count: messageCount },
+    { count: platformCount },
   ] = await Promise.all([
-    prisma.project.count(),
-    prisma.service.count(),
-    prisma.skillGroup.count(),
-    prisma.message.count(),
-    prisma.platform.count(),
+    supabaseAdmin.from("Project").select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("Service").select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("SkillGroup").select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("Message").select("*", { count: "exact", head: true }),
+    supabaseAdmin.from("Platform").select("*", { count: "exact", head: true }),
   ]);
 
   const stats = [
-    { label: "Projects", value: projectCount, icon: FolderKanban, color: "text-blue-600" },
-    { label: "Services", value: serviceCount, icon: Briefcase, color: "text-green-600" },
-    { label: "Skills", value: skillCount, icon: Award, color: "text-purple-600" },
-    { label: "Messages", value: messageCount, icon: MessageSquare, color: "text-orange-600" },
-    { label: "Platforms", value: platformCount, icon: Share2, color: "text-pink-600" },
+    { label: "Projects", value: projectCount || 0, icon: FolderKanban, color: "text-blue-600" },
+    { label: "Services", value: serviceCount || 0, icon: Briefcase, color: "text-green-600" },
+    { label: "Skills", value: skillCount || 0, icon: Award, color: "text-purple-600" },
+    { label: "Messages", value: messageCount || 0, icon: MessageSquare, color: "text-orange-600" },
+    { label: "Platforms", value: platformCount || 0, icon: Share2, color: "text-pink-600" },
   ];
 
-  const recentMessages = await prisma.message.findMany({
-    take: 5,
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: recentMessages } = await supabaseAdmin
+    .from("Message")
+    .select("*")
+    .order("createdAt", { ascending: false })
+    .limit(5);
 
   return (
     <div className="space-y-8">
@@ -58,7 +59,7 @@ export default async function AdminDashboard() {
           <CardTitle>Recent Messages</CardTitle>
         </CardHeader>
         <CardContent>
-          {recentMessages.length === 0 ? (
+          {!recentMessages || recentMessages.length === 0 ? (
             <p className="text-sm text-muted-foreground">No messages yet</p>
           ) : (
             <div className="space-y-4">

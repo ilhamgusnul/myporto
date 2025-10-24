@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { updatePlatform } from "../../actions";
 import Link from "next/link";
@@ -12,11 +12,15 @@ export default async function EditPlatformPage({
 }: {
   params: { id: string };
 }) {
-  const platform = await prisma.platform.findUnique({
-    where: { id: params.id },
-  });
+  const { data: platform } = await supabaseAdmin
+    .from("Platform")
+    .select("*")
+    .eq("id", params.id)
+    .single();
 
-  if (!platform) notFound();
+  if (!platform) {
+    return <div>Platform not found</div>;
+  }
 
   const updateWithId = updatePlatform.bind(null, params.id);
 

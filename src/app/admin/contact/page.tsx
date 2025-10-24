@@ -1,11 +1,15 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { updateContact } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default async function ContactPage() {
-  const contact = await prisma.contactInfo.findFirst();
+  const { data: contact } = await supabaseAdmin
+    .from("ContactInfo")
+    .select("*")
+    .limit(1)
+    .single();
 
   if (!contact) {
     return (

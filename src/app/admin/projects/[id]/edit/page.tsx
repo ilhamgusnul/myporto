@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { updateProject } from "../../actions";
 import Link from "next/link";
@@ -21,11 +21,15 @@ export default async function EditProjectPage({
 }: {
   params: { id: string };
 }) {
-  const project = await prisma.project.findUnique({
-    where: { id: params.id },
-  });
+  const { data: project } = await supabaseAdmin
+    .from("Project")
+    .select("*")
+    .eq("id", params.id)
+    .single();
 
-  if (!project) notFound();
+  if (!project) {
+    return <div>Project not found</div>;
+  }
 
   const updateWithId = updateProject.bind(null, params.id);
 

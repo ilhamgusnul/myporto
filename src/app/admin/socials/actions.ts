@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -10,17 +10,20 @@ export async function createSocialMedia(formData: FormData) {
   const icon = formData.get("icon") as string;
   const order = parseInt(formData.get("order") as string) || 0;
 
-  await prisma.socialMedia.create({
-    data: {
-      name,
-      url,
-      icon,
-      order,
-    },
-  });
+  const { error } = await supabaseAdmin.from("SocialMedia").insert([{
+    name,
+    url,
+    icon,
+    order,
+  }]);
+
+  if (error) {
+    console.error("Failed to create social media:", error);
+  }
 
   revalidatePath("/admin/socials");
   revalidatePath("/");
+  redirect("/admin/socials");
 }
 
 export async function updateSocialMedia(id: string, formData: FormData) {
@@ -29,25 +32,26 @@ export async function updateSocialMedia(id: string, formData: FormData) {
   const icon = formData.get("icon") as string;
   const order = parseInt(formData.get("order") as string) || 0;
 
-  await prisma.socialMedia.update({
-    where: { id },
-    data: {
-      name,
-      url,
-      icon,
-      order,
-    },
-  });
+  const { error } = await supabaseAdmin.from("SocialMedia").update({
+    name,
+    url,
+    icon,
+    order,
+  }).eq("id", id);
+
+  if (error) {
+    console.error("Failed to update social media:", error);
+  }
 
   revalidatePath("/admin/socials");
   revalidatePath("/");
+  redirect("/admin/socials");
 }
 
 export async function deleteSocialMedia(id: string) {
   try {
-    await prisma.socialMedia.delete({
-      where: { id },
-    });
+    const { error } = await supabaseAdmin.from("SocialMedia").delete().eq("id", id);
+    if (error) throw error;
     revalidatePath("/admin/socials");
     revalidatePath("/");
   } catch (error) {

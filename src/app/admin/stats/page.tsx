@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/table";
 
 export default async function StatsPage() {
-  const stats = await prisma.stat.findMany({
-    orderBy: { key: "asc" },
-  });
+  const { data: stats } = await supabaseAdmin
+    .from("Stat")
+    .select("*")
+    .order("order");
 
   return (
     <div className="space-y-6">
@@ -22,7 +23,7 @@ export default async function StatsPage() {
         <p className="text-muted-foreground mt-1">Manage homepage statistics</p>
       </div>
 
-      {stats.length === 0 ? (
+      {!stats || stats.length === 0 ? (
         <div className="bg-white p-12 rounded-lg border text-center">
           <p className="text-muted-foreground">No stats found</p>
         </div>
@@ -33,7 +34,6 @@ export default async function StatsPage() {
               <TableRow>
                 <TableHead>Label</TableHead>
                 <TableHead>Value</TableHead>
-                <TableHead>Key</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>

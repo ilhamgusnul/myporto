@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { updateCTA } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 export default async function CTAPage() {
-  const cta = await prisma.cTA.findFirst();
+  const { data: cta } = await supabaseAdmin
+    .from("CTA")
+    .select("*")
+    .limit(1)
+    .single();
 
   if (!cta) {
     return (

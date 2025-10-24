@@ -1,21 +1,19 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const skillSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  proficiency: z.number().min(0).max(100),
-  tools: z.string().min(1, "At least one tool is required"),
+  name: z.string().min(1, "Name is required"),
+  skills: z.string().min(1, "At least one skill is required"),
 });
 
 export async function createSkill(formData: FormData) {
   const values = {
-    title: String(formData.get("title") || ""),
-    proficiency: Number(formData.get("proficiency") || 0),
-    tools: String(formData.get("tools") || ""),
+    name: String(formData.get("name") || ""),
+    skills: String(formData.get("skills") || ""),
   };
 
   const parsed = skillSchema.safeParse(values);
@@ -24,28 +22,29 @@ export async function createSkill(formData: FormData) {
     throw new Error("Validation failed");
   }
 
-  const toolsArray = parsed.data.tools
+  const skillsArray = parsed.data.skills
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
 
-  await prisma.skillGroup.create({
-    data: {
-      title: parsed.data.title,
-      proficiency: parsed.data.proficiency,
-      tools: toolsArray,
-    },
-  });
+  const { error } = await supabaseAdmin.from("SkillGroup").insert([{
+    name: parsed.data.name,
+    skills: skillsArray,
+  }]);
+
+  if (error) {
+    console.error("Failed to create skill group:", error);
+  }
 
   revalidatePath("/admin/skills");
+  revalidatePath("/");
   redirect("/admin/skills");
 }
 
 export async function updateSkill(id: string, formData: FormData) {
   const values = {
-    title: String(formData.get("title") || ""),
-    proficiency: Number(formData.get("proficiency") || 0),
-    tools: String(formData.get("tools") || ""),
+    name: String(formData.get("name") || ""),
+    skills: String(formData.get("skills") || ""),
   };
 
   const parsed = skillSchema.safeParse(values);
@@ -54,31 +53,34 @@ export async function updateSkill(id: string, formData: FormData) {
     throw new Error("Validation failed");
   }
 
-  const toolsArray = parsed.data.tools
+  const skillsArray = parsed.data.skills
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
 
-  await prisma.skillGroup.update({
-    where: { id },
-    data: {
-      title: parsed.data.title,
-      proficiency: parsed.data.proficiency,
-      tools: toolsArray,
-    },
-  });
+  const { error } = await supabaseAdmin.from("SkillGroup").update({
+    name: parsed.data.name,
+    skills: skillsArray,
+  }).eq("id", id);
+
+  if (error) {
+    console.error("Failed to update skill group:", error);
+  }
 
   revalidatePath("/admin/skills");
+  revalidatePath("/");
   redirect("/admin/skills");
 }
 
 export async function deleteSkill(id: string) {
   try {
-    await prisma.skillGroup.delete({ where: { id } });
+    const { error } = await supabaseAdmin.from("SkillGroup").delete().eq("id", id);
+    if (error) throw error;
   } catch (error) {
     console.error("Failed to delete skill:", error);
   }
   
   revalidatePath("/admin/skills");
+  revalidatePath("/");
   redirect("/admin/skills");
 }

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { updateStat } from "../../actions";
 import Link from "next/link";
@@ -12,11 +12,15 @@ export default async function EditStatPage({
 }: {
   params: { id: string };
 }) {
-  const stat = await prisma.stat.findUnique({
-    where: { id: params.id },
-  });
+  const { data: stat } = await supabaseAdmin
+    .from("Stat")
+    .select("*")
+    .eq("id", params.id)
+    .single();
 
-  if (!stat) notFound();
+  if (!stat) {
+    return <div>Stat not found</div>;
+  }
 
   const updateWithId = updateStat.bind(null, params.id);
 

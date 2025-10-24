@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus, ExternalLink } from "lucide-react";
@@ -13,9 +13,10 @@ import {
 import { DeletePlatformButton } from "./delete-button";
 
 export default async function PlatformsPage() {
-  const platforms = await prisma.platform.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const { data: platforms } = await supabaseAdmin
+    .from("Platform")
+    .select("*")
+    .order("order");
 
   return (
     <div className="space-y-6">
@@ -32,7 +33,7 @@ export default async function PlatformsPage() {
         </Link>
       </div>
 
-      {platforms.length === 0 ? (
+      {!platforms || platforms.length === 0 ? (
         <div className="text-center py-12 border rounded-lg bg-white">
           <p className="text-muted-foreground">No platforms yet</p>
           <Link href="/admin/platforms/new">

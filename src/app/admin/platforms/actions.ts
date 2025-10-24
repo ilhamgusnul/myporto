@@ -1,23 +1,21 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const platformSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  profileUrl: z.string().url("Valid URL is required"),
-  tagline: z.string().optional(),
-  logoUrl: z.string().url().optional().or(z.literal("")),
+  url: z.string().url("Valid URL is required"),
+  icon: z.string().min(1, "Icon is required"),
 });
 
 export async function createPlatform(formData: FormData) {
   const values = {
     name: String(formData.get("name") || ""),
-    profileUrl: String(formData.get("profileUrl") || ""),
-    tagline: String(formData.get("tagline") || ""),
-    logoUrl: String(formData.get("logoUrl") || ""),
+    url: String(formData.get("url") || ""),
+    icon: String(formData.get("icon") || "Globe"),
   };
 
   const parsed = platformSchema.safeParse(values);
@@ -26,25 +24,26 @@ export async function createPlatform(formData: FormData) {
     throw new Error("Validation failed");
   }
 
-  await prisma.platform.create({
-    data: {
-      name: parsed.data.name,
-      profileUrl: parsed.data.profileUrl,
-      tagline: parsed.data.tagline || null,
-      logoUrl: parsed.data.logoUrl || null,
-    },
-  });
+  const { error } = await supabaseAdmin.from("Platform").insert([{
+    name: parsed.data.name,
+    url: parsed.data.url,
+    icon: parsed.data.icon,
+  }]);
+
+  if (error) {
+    console.error("Failed to create platform:", error);
+  }
 
   revalidatePath("/admin/platforms");
+  revalidatePath("/");
   redirect("/admin/platforms");
 }
 
 export async function updatePlatform(id: string, formData: FormData) {
   const values = {
     name: String(formData.get("name") || ""),
-    profileUrl: String(formData.get("profileUrl") || ""),
-    tagline: String(formData.get("tagline") || ""),
-    logoUrl: String(formData.get("logoUrl") || ""),
+    url: String(formData.get("url") || ""),
+    icon: String(formData.get("icon") || "Globe"),
   };
 
   const parsed = platformSchema.safeParse(values);
@@ -53,27 +52,30 @@ export async function updatePlatform(id: string, formData: FormData) {
     throw new Error("Validation failed");
   }
 
-  await prisma.platform.update({
-    where: { id },
-    data: {
-      name: parsed.data.name,
-      profileUrl: parsed.data.profileUrl,
-      tagline: parsed.data.tagline || null,
-      logoUrl: parsed.data.logoUrl || null,
-    },
-  });
+  const { error } = await supabaseAdmin.from("Platform").update({
+    name: parsed.data.name,
+    url: parsed.data.url,
+    icon: parsed.data.icon,
+  }).eq("id", id);
+
+  if (error) {
+    console.error("Failed to update platform:", error);
+  }
 
   revalidatePath("/admin/platforms");
+  revalidatePath("/");
   redirect("/admin/platforms");
 }
 
 export async function deletePlatform(id: string) {
   try {
-    await prisma.platform.delete({ where: { id } });
+    const { error } = await supabaseAdmin.from("Platform").delete().eq("id", id);
+    if (error) throw error;
   } catch (error) {
     console.error("Failed to delete platform:", error);
   }
   
   revalidatePath("/admin/platforms");
+  revalidatePath("/");
   redirect("/admin/platforms");
 }

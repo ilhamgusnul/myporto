@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { updateSocialMedia } from "../../actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,9 +12,11 @@ export default async function EditSocialPage({
 }: {
   params: { id: string };
 }) {
-  const social = await prisma.socialMedia.findUnique({
-    where: { id: params.id },
-  });
+  const { data: social } = await supabaseAdmin
+    .from("SocialMedia")
+    .select("*")
+    .eq("id", params.id)
+    .single();
 
   if (!social) {
     notFound();

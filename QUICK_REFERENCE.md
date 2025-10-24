@@ -111,16 +111,19 @@ openssl rand -base64 32
 
 | Model | Purpose | Singleton | Key Fields |
 |-------|---------|-----------|------------|
-| User | Admin auth | ❌ | email, password, role |
-| About | Personal info | ✅ | title, subtitle, content, avatarUrl |
-| Service | Services | ❌ | title, description |
+| Profile | User profiles | ❌ | email, name, role (linked to auth.users) |
+| About | Personal info | ✅ | title, subtitle, content, imageUrl |
+| Service | Services | ❌ | title, description, icon |
 | SkillGroup | Skills | ❌ | title, proficiency, tools[] |
 | Project | Portfolio | ❌ | title, category, stack[], imageUrl |
 | Platform | Social links | ❌ | name, profileUrl, tagline |
-| ContactInfo | Contact | ✅ | location, email, whatsapp |
-| Stat | Stats | ❌ | key, label, value |
-| CTA | Call-to-action | ✅ | heading, primaryText, primaryHref |
+| ContactInfo | Contact | ✅ | location, email, phone |
+| Stat | Stats | ❌ | label, value, order |
+| CTA | Call-to-action | ✅ | title, description, buttonText, buttonLink |
 | Message | Contact form | ❌ (read-only) | name, email, message |
+| SocialMedia | Social icons | ❌ | name, icon, url, order |
+
+**Note:** Authentication now uses **Supabase Auth** (`auth.users` table). Profile table automatically syncs via database trigger.
 
 ---
 

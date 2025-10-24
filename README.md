@@ -167,7 +167,7 @@ portfolio-supabase/
 
 ### Models
 
-- **User** - Admin users (bcrypt password)
+- **Profile** - User profiles (linked to Supabase Auth)
 - **About** - Personal info & bio (singleton-like)
 - **Service** - Services offered
 - **SkillGroup** - Skill categories dengan proficiency & tools
@@ -177,6 +177,7 @@ portfolio-supabase/
 - **Stat** - Homepage statistics (projects_completed, years_experience, dll)
 - **CTA** - Call-to-action section
 - **Message** - Messages dari contact form
+- **SocialMedia** - Social media links for footer
 
 ---
 

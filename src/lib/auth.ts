@@ -1,7 +1,10 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import { supabaseAdmin } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -15,20 +18,36 @@ export const authOptions: NextAuthOptions = {
       async authorize(creds) {
         if (!creds?.email || !creds.password) return null;
         
-        const user = await prisma.user.findUnique({ 
-          where: { email: creds.email } 
+        // Create Supabase Auth client
+        const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
         });
         
-        if (!user) return null;
+        // Try to sign in with Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+          email: creds.email,
+          password: creds.password,
+        });
         
-        const ok = await bcrypt.compare(creds.password, user.password);
-        if (!ok) return null;
+        if (authError || !authData.user) return null;
+        
+        // Get profile data
+        const { data: profile } = await supabaseAdmin
+          .from("Profile")
+          .select("*")
+          .eq("id", authData.user.id)
+          .single();
+        
+        if (!profile) return null;
         
         return { 
-          id: user.id, 
-          email: user.email, 
-          name: user.name, 
-          role: user.role 
+          id: profile.id, 
+          email: profile.email, 
+          name: profile.name,
+          role: profile.role
         } as any;
       },
     }),
@@ -36,12 +55,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
+        (session.user as any).id = token.id;
         (session.user as any).role = token.role;
       }
       return session;

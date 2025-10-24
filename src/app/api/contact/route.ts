@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { messageSchema } from "@/lib/validators";
 
 export async function POST(req: Request) {
@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const data = {
       name: String(form.get("name") || "").trim(),
       email: String(form.get("email") || "").trim(),
+      subject: String(form.get("subject") || "General Inquiry").trim(),
       message: String(form.get("message") || "").trim(),
     };
 
@@ -23,9 +24,11 @@ export async function POST(req: Request) {
     }
 
     // Save to database
-    await prisma.message.create({
-      data: validated.data,
-    });
+    const { error } = await supabase
+      .from("Message")
+      .insert([validated.data]);
+
+    if (error) throw error;
 
     return NextResponse.json({ ok: true, message: "Message sent successfully!" });
   } catch (error) {

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { supabaseAdmin } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { updateSkill } from "../../actions";
 import Link from "next/link";
@@ -12,11 +12,15 @@ export default async function EditSkillPage({
 }: {
   params: { id: string };
 }) {
-  const skill = await prisma.skillGroup.findUnique({
-    where: { id: params.id },
-  });
+  const { data: skill } = await supabaseAdmin
+    .from("SkillGroup")
+    .select("*")
+    .eq("id", params.id)
+    .single();
 
-  if (!skill) notFound();
+  if (!skill) {
+    return <div>Skill not found</div>;
+  }
 
   const updateWithId = updateSkill.bind(null, params.id);
 
