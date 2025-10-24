@@ -48,40 +48,28 @@ export default async function SkillsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Proficiency</TableHead>
-                <TableHead>Tools</TableHead>
+                <TableHead>Skill Group</TableHead>
+                <TableHead>Skills</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {skills.map((skill) => (
                 <TableRow key={skill.id}>
-                  <TableCell className="font-medium">{skill.title}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 bg-secondary rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full"
-                          style={{ width: `${skill.proficiency}%` }}
-                        />
-                      </div>
-                      <span className="text-sm">{skill.proficiency}%</span>
-                    </div>
-                  </TableCell>
+                  <TableCell className="font-medium">{skill.name}</TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap max-w-md">
-                      {skill.tools.slice(0, 4).map((tool: string, i: number) => (
+                      {skill.skills?.slice(0, 5).map((item: string, i: number) => (
                         <span
                           key={i}
                           className="text-xs bg-slate-100 px-2 py-1 rounded"
                         >
-                          {tool}
+                          {item}
                         </span>
                       ))}
-                      {skill.tools.length > 4 && (
+                      {skill.skills && skill.skills.length > 5 && (
                         <span className="text-xs text-muted-foreground">
-                          +{skill.tools.length - 4}
+                          +{skill.skills.length - 5}
                         </span>
                       )}
                     </div>
