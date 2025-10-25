@@ -80,7 +80,7 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
       {/* Carousel Container */}
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth pb-4"
+        className="flex items-start gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-smooth pb-4"
         style={{
           scrollbarWidth: "none",
           msOverflowStyle: "none",
