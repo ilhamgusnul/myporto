@@ -35,8 +35,8 @@ export function ProjectCard({
     <Card
       className={`bg-white overflow-visible transition-all duration-300 ease-out cursor-pointer flex flex-col relative ${
         isExpanded 
-          ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 z-50" 
-          : "shadow-lg hover:shadow-xl h-full"
+          ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 z-50 min-h-[520px]" 
+          : "shadow-lg hover:shadow-xl min-h-[520px]"
       }`}
       onClick={() => onToggle(id)}
     >
