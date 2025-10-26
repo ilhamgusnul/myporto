@@ -10,6 +10,7 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import { CarouselNavigation } from "@/components/carousel-navigation";
 import { ContactForm } from "@/components/contact-form";
 import { ProjectsCarousel } from "@/components/projects-carousel";
+import { MobileNav } from "@/components/mobile-nav";
 import * as LucideIcons from "lucide-react";
 
 // Icon mapping for social media and services
@@ -66,14 +67,21 @@ export default async function HomePage() {
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b">
         <nav className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold">Portfolio</Link>
-            <div className="flex items-center gap-6">
+            <Link href="/" className="text-xl font-bold bg-gradient-to-r from-[#ff6b00] to-[#ff8c42] bg-clip-text text-transparent">
+              IG.DEV
+            </Link>
+            
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-6">
               <a href="#hero" className="text-sm hover:text-[#ff6b00] transition-colors">About</a>
               <a href="#services" className="text-sm hover:text-[#ff6b00] transition-colors">Services</a>
               <a href="#skills" className="text-sm hover:text-[#ff6b00] transition-colors">Skills</a>
               <a href="#projects" className="text-sm hover:text-[#ff6b00] transition-colors">Projects</a>
               <a href="#contact" className="text-sm hover:text-[#ff6b00] transition-colors">Contact</a>
             </div>
+
+            {/* Mobile Navigation */}
+            <MobileNav />
           </div>
         </nav>
       </header>
