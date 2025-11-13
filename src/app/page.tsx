@@ -357,27 +357,22 @@ export default async function HomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-16">
+      <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-6">
-            {/* Name */}
-            <h3 className="text-2xl md:text-3xl font-bold">
-              {about?.title || "Ilham Gusnul Romadhon"}
-            </h3>
-            
-            {/* Subtitle */}
-            <p className="text-gray-400 text-sm md:text-base">
-              {about?.subtitle || "Fullstack Web Developer & UI/UX Designer"}
-            </p>
-
-            {/* Copyright */}
-            <p className="text-gray-500 text-xs md:text-sm pt-4">
-              © {new Date().getFullYear()} {about?.title || "Ilham Gusnul Romadhon"}. All rights reserved.<br />
-              {about?.subtitle || "Fullstack Web Developer & UI/UX Designer"}
-            </p>
+          <div className="text-center space-y-8">
+            {/* Name & Tagline */}
+            <div className="space-y-3">
+              <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                {about?.title || "Ilham Gusnul Romadhon"}
+              </h3>
+              
+              <p className="text-gray-300 text-base md:text-lg font-medium">
+                {about?.subtitle || "Fullstack Web Developer & UI/UX Designer"}
+              </p>
+            </div>
 
             {/* Social Icons */}
-            <div className="flex items-center justify-center gap-4 pt-2">
+            <div className="flex items-center justify-center gap-6">
               {socials?.map((social) => {
                 const IconComponent = iconMap[social.icon as keyof typeof iconMap];
                 return (
@@ -386,23 +381,31 @@ export default async function HomePage() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-white transition-colors"
+                    className="group relative"
                     title={social.name}
                   >
-                    {IconComponent && <IconComponent className="h-5 w-5" />}
+                    <div className="absolute inset-0 bg-[#ff6b00] rounded-full blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                    <div className="relative bg-white/10 hover:bg-[#ff6b00] p-3 rounded-full transition-all duration-300 transform group-hover:scale-110">
+                      {IconComponent && <IconComponent className="h-5 w-5 text-white" />}
+                    </div>
                   </a>
                 );
               })}
             </div>
 
-            {/* Contact Link */}
-            <div className="pt-4">
-              <a 
-                href="#contact" 
-                className="text-[#ff6b00] hover:text-[#e55f00] transition-colors font-medium"
-              >
-                Contact
-              </a>
+            {/* Divider */}
+            <div className="max-w-xs mx-auto">
+              <div className="h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent"></div>
+            </div>
+
+            {/* Copyright */}
+            <div className="space-y-1">
+              <p className="text-gray-400 text-sm">
+                © {new Date().getFullYear()} {about?.title || "Ilham Gusnul Romadhon"}. All rights reserved.
+              </p>
+              <p className="text-gray-500 text-xs">
+                Crafted with passion and code ✨
+              </p>
             </div>
           </div>
         </div>
