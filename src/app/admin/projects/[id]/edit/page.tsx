@@ -15,13 +15,13 @@ export default async function EditProjectPage({
 }: {
   params: { id: string };
 }) {
-  const { data: project } = await supabaseAdmin
+  const { data: project, error } = await supabaseAdmin
     .from("Project")
     .select("*")
     .eq("id", params.id)
     .single();
 
-  if (!project) {
+  if (error || !project) {
     return <div>Project not found</div>;
   }
 
