@@ -7,9 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MapPin, Phone, Github, Linkedin, Twitter, Facebook, Instagram, Youtube, Globe, Code, Palette, Smartphone, Server, Cloud, MessageSquare, Briefcase, Layers, Lightbulb, Zap } from "lucide-react";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import { CarouselNavigation } from "@/components/carousel-navigation";
 import { ContactForm } from "@/components/contact-form";
-import { ProjectsCarousel } from "@/components/projects-carousel";
+import { ProjectsGrid } from "@/components/projects-grid";
 import { MobileNav } from "@/components/mobile-nav";
 import * as LucideIcons from "lucide-react";
 
@@ -242,7 +241,7 @@ export default async function HomePage() {
               <p className="text-gray-600">Check out some of my recent work</p>
             </div>
 
-            <ProjectsCarousel projects={projects} />
+            <ProjectsGrid projects={projects} />
           </section>
         )}
 

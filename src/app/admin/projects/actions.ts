@@ -12,6 +12,7 @@ const projectSchema = z.object({
   demoUrl: z.string().url().optional().or(z.literal("")),
   githubUrl: z.string().url().optional().or(z.literal("")),
   technologies: z.string().min(1, "At least one technology is required"),
+  category: z.string().optional(),
 });
 
 export async function createProject(formData: FormData) {
@@ -25,6 +26,7 @@ export async function createProject(formData: FormData) {
       technologies: String(formData.get("technologies") || ""),
       demoUrl: String(formData.get("demoUrl") || ""),
       githubUrl: String(formData.get("githubUrl") || ""),
+      category: String(formData.get("category") || ""),
     };
 
     console.log("Values to validate:", values);
@@ -50,6 +52,7 @@ export async function createProject(formData: FormData) {
       technologies: techArray,
       demoUrl: parsed.data.demoUrl || null,
       githubUrl: parsed.data.githubUrl || null,
+      category: parsed.data.category || null,
     };
 
     console.log("Inserting project:", projectData);
@@ -88,6 +91,7 @@ export async function updateProject(id: string, formData: FormData) {
       technologies: String(formData.get("technologies") || ""),
       demoUrl: String(formData.get("demoUrl") || ""),
       githubUrl: String(formData.get("githubUrl") || ""),
+      category: String(formData.get("category") || ""),
     };
 
     console.log("Values to validate:", values);
@@ -111,6 +115,7 @@ export async function updateProject(id: string, formData: FormData) {
       technologies: techArray,
       demoUrl: parsed.data.demoUrl || null,
       githubUrl: parsed.data.githubUrl || null,
+      category: parsed.data.category || null,
       updatedAt: new Date().toISOString(),
     };
 

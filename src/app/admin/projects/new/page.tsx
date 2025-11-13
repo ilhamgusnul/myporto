@@ -54,6 +54,21 @@ export default function NewProjectPage() {
           </p>
         </div>
 
+        <div className="space-y-2">
+          <Label htmlFor="category">Category</Label>
+          <select
+            id="category"
+            name="category"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <option value="">Select category</option>
+            <option value="Fullstack Web Developer">Fullstack Web Developer</option>
+            <option value="UI/UX Design">UI/UX Design</option>
+            <option value="Visual & Brand Design">Visual & Brand Design</option>
+            <option value="Mobile Apps Developer">Mobile Apps Developer</option>
+          </select>
+        </div>
+
         <ImageUpload
           name="imageUrl"
           label="Project Image"
