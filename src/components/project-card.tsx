@@ -35,13 +35,13 @@ export function ProjectCard({
     <Card
       className={`bg-white overflow-visible transition-all duration-300 ease-out cursor-pointer flex flex-col relative ${
         isExpanded 
-          ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 z-50 min-h-[520px]" 
-          : "shadow-lg hover:shadow-xl min-h-[520px]"
+          ? "shadow-2xl ring-2 ring-[#ff6b00] ring-opacity-50 z-50 min-h-[420px]" 
+          : "shadow-lg hover:shadow-xl min-h-[420px]"
       }`}
       onClick={() => onToggle(id)}
     >
       {imageUrl && (
-        <div className="relative h-48 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
+        <div className="relative h-40 w-full bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden flex-shrink-0">
           <Image
             src={imageUrl}
             alt={title}
@@ -56,15 +56,15 @@ export function ProjectCard({
           )}
         </div>
       )}
-      <div className="p-6 flex-1 flex flex-col">
+      <div className="p-5 flex-1 flex flex-col">
         {/* Title & Description - Always Visible */}
-        <h3 className={`text-xl font-bold mb-2 transition-colors duration-300 ${
+        <h3 className={`text-lg font-bold mb-2 transition-colors duration-300 ${
           isExpanded ? "text-[#ff6b00]" : "text-gray-900"
         }`}>
           {title}
         </h3>
-        <p className={`text-gray-600 mb-4 leading-relaxed text-sm ${
-          isExpanded ? "" : "line-clamp-3"
+        <p className={`text-gray-600 mb-3 leading-relaxed text-sm ${
+          isExpanded ? "" : "line-clamp-2"
         }`}>
           {description}
         </p>
@@ -76,22 +76,22 @@ export function ProjectCard({
         <div
           className={`transition-all duration-500 ease-out ${
             isExpanded 
-              ? "max-h-96 opacity-100 mt-6 translate-y-0" 
+              ? "max-h-96 opacity-100 mt-4 translate-y-0" 
               : "max-h-0 opacity-0 -translate-y-4"
           }`}
           style={{ overflow: isExpanded ? "visible" : "hidden" }}
         >
           {/* Technologies */}
           {technologies && technologies.length > 0 && (
-            <div className="mb-6">
-              <h4 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-700 mb-2 uppercase tracking-wide">
                 Tech Stack
               </h4>
               <div className="flex gap-2 flex-wrap">
                 {technologies.map((tech, i) => (
                   <span
                     key={i}
-                    className="px-3 py-1.5 bg-gradient-to-r from-[#ff6b00] to-[#ff8533] text-white text-xs rounded-full font-medium shadow-md hover:shadow-lg transition-shadow"
+                    className="px-2.5 py-1 bg-gradient-to-r from-[#ff6b00] to-[#ff8533] text-white text-xs rounded-full font-medium shadow-md hover:shadow-lg transition-shadow"
                     style={{
                       animationDelay: `${i * 50}ms`,
                       animation: isExpanded ? "fadeInUp 0.4s ease-out forwards" : "none",
@@ -105,7 +105,7 @@ export function ProjectCard({
           )}
 
           {/* Links */}
-          <div className="flex gap-3 pt-4 border-t border-gray-200">
+          <div className="flex gap-2 pt-3 border-t border-gray-200">
             {demoUrl && (
               <a
                 href={demoUrl}
@@ -118,7 +118,7 @@ export function ProjectCard({
                   size="sm"
                   className="bg-gradient-to-r from-[#ff6b00] to-[#ff8533] hover:from-[#e55f00] hover:to-[#ff6b00] w-full shadow-md hover:shadow-lg transition-all text-xs"
                 >
-                  <ExternalLink className="h-3 w-3 mr-2" />
+                  <ExternalLink className="h-3 w-3 mr-1.5" />
                   Live Demo
                 </Button>
               </a>
@@ -136,7 +136,7 @@ export function ProjectCard({
                   variant="outline" 
                   className="w-full border-gray-300 hover:border-[#ff6b00] hover:text-[#ff6b00] hover:bg-[#fff5f0] transition-all text-xs"
                 >
-                  <Github className="h-3 w-3 mr-2" />
+                  <Github className="h-3 w-3 mr-1.5" />
                   Source Code
                 </Button>
               </a>
@@ -146,7 +146,7 @@ export function ProjectCard({
 
         {/* Footer Hint - Untuk konsistensi tinggi card */}
         {!isExpanded && (
-          <div className="mt-6 pt-4 border-t border-gray-100">
+          <div className="mt-4 pt-3 border-t border-gray-100">
             <p className="text-xs text-gray-400 text-center font-medium animate-pulse">
               ✨ Click to see details
             </p>
