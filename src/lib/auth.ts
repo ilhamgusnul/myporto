@@ -7,10 +7,11 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
 
 // Get NEXTAUTH_SECRET with fallback for build time
-const nextAuthSecret = process.env.NEXTAUTH_SECRET || 
-  (process.env.NODE_ENV === 'production' 
-    ? undefined 
-    : 'development-secret-change-in-production');
+const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+
+if (process.env.NODE_ENV === 'production' && !nextAuthSecret) {
+  console.warn("⚠️ NEXTAUTH_SECRET is improperly set in production!");
+}
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },

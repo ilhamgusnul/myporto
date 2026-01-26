@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react";
 import { useState, FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -43,6 +45,15 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen grid place-items-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
       <Card className="w-full max-w-md shadow-lg">
+        {process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co' && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Configuration Error</AlertTitle>
+            <AlertDescription>
+              Supabase URL is not configured. Please check your environment variables.
+            </AlertDescription>
+          </Alert>
+        )}
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">Admin Login</CardTitle>
           <CardDescription className="text-center">
