@@ -2,9 +2,10 @@
 
 import { signIn } from "next-auth/react";
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -43,7 +44,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid place-items-center p-6 bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen grid place-items-center p-6 bg-gradient-to-br from-slate-50 to-slate-100 relative">
+      <Button
+        variant="ghost"
+        className="absolute top-4 left-4 md:top-8 md:left-8"
+        asChild
+      >
+        <Link href="/">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Home
+        </Link>
+      </Button>
       <Card className="w-full max-w-md shadow-lg">
         {process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co' && (
           <Alert variant="destructive" className="mb-4">
