@@ -1,12 +1,40 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Portfolio - Full Stack Developer",
-  description: "Professional portfolio showcasing web development projects and skills",
+  title: "Ilham Gusnul Romadhon | Fullstack Developer & UI/UX Designer",
+  description:
+    "Personal portfolio of Ilham Gusnul Romadhon. Fullstack Web Developer & UI/UX Designer based in Bandung, Indonesia. Code by Logic, Design with Passion.",
+  keywords: [
+    "Ilham Gusnul Romadhon",
+    "Fullstack Developer",
+    "UI/UX Designer",
+    "Web Developer Bandung",
+    "React Developer",
+    "Next.js Developer",
+    "Laravel Developer",
+  ],
+  authors: [{ name: "Ilham Gusnul Romadhon" }],
+  openGraph: {
+    title: "Ilham Gusnul Romadhon | Fullstack Developer & UI/UX Designer",
+    description: "Code by Logic, Design with Passion.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -15,8 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={`${syne.variable} ${dmSans.variable}`}>
+      <body className="font-body antialiased">{children}</body>
     </html>
   );
 }

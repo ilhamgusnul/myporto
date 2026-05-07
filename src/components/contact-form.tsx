@@ -1,10 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import { ArrowUpRight } from "lucide-react";
+
+const SUBJECTS = [
+  "Web Development",
+  "UI/UX Design",
+  "Branding & Visual Design",
+  "Mobile App Development",
+  "General Inquiry",
+];
 
 export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,57 +23,90 @@ export function ContactForm() {
 
     const formData = new FormData(e.currentTarget);
     const data = {
-      name: String(formData.get("name") || ""),
-      email: String(formData.get("email") || ""),
+      name:    String(formData.get("name")    || ""),
+      email:   String(formData.get("email")   || ""),
       subject: String(formData.get("subject") || "General Inquiry"),
       message: String(formData.get("message") || ""),
     };
 
     try {
       const { error } = await supabase.from("Message").insert([data]);
-
       if (error) throw error;
-
-      setMessage({ type: "success", text: "Message sent successfully! We'll get back to you soon." });
+      setMessage({ type: "success", text: "Message sent! I'll get back to you soon." });
       (e.target as HTMLFormElement).reset();
-    } catch (error) {
-      console.error("Contact form error:", error);
+    } catch (err) {
+      console.error("Contact form error:", err);
       setMessage({ type: "error", text: "Failed to send message. Please try again." });
     } finally {
       setIsSubmitting(false);
     }
   }
 
+  const inputClass = "w-full bg-white border border-gray-200 rounded-2xl px-5 py-4 text-sm text-[#111111] placeholder:text-gray-400 focus:outline-none focus:border-[#111111] focus:ring-1 focus:ring-[#111111] transition-all";
+
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
-      <div className="grid gap-2">
-        <Input name="name" placeholder="Your Name" required disabled={isSubmitting} />
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-4">
+        <input
+          name="name"
+          placeholder="Your Name"
+          required
+          disabled={isSubmitting}
+          className={inputClass}
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="your@email.com"
+          required
+          disabled={isSubmitting}
+          className={inputClass}
+        />
       </div>
-      <div className="grid gap-2">
-        <Input name="email" type="email" placeholder="your@email.com" required disabled={isSubmitting} />
+      <div>
+        <select
+          name="subject"
+          disabled={isSubmitting}
+          defaultValue="General Inquiry"
+          className={`${inputClass} appearance-none cursor-pointer`}
+        >
+          {SUBJECTS.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
       </div>
-      <div className="grid gap-2">
-        <Input name="subject" placeholder="Subject" defaultValue="General Inquiry" disabled={isSubmitting} />
+      <div>
+        <textarea
+          name="message"
+          placeholder="Tell me about your project..."
+          rows={4}
+          required
+          disabled={isSubmitting}
+          className={`${inputClass} resize-y`}
+        />
       </div>
-      <div className="grid gap-2">
-        <Textarea name="message" placeholder="Your message..." rows={5} required disabled={isSubmitting} />
-      </div>
-      
+
       {message && (
         <div
-          className={`p-3 rounded-md text-sm ${
+          className={`p-4 rounded-2xl text-sm font-semibold ${
             message.type === "success"
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-red-50 text-red-800 border border-red-200"
+              ? "bg-green-50 text-green-700 border border-green-200"
+              : "bg-red-50 text-red-700 border border-red-200"
           }`}
         >
           {message.text}
         </div>
       )}
 
-      <Button type="submit" className="bg-[#ff6b00] hover:bg-[#e55f00]" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Send Message"}
-      </Button>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-[#111111] text-white font-semibold hover:bg-[#333333] transition-colors disabled:opacity-70 mx-auto mt-6"
+      >
+        {isSubmitting ? "Sending..." : "Contact Me"} <ArrowUpRight className="w-5 h-5" />
+      </button>
     </form>
   );
 }

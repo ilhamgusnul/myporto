@@ -7,15 +7,13 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       colors: {
@@ -53,6 +51,11 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      fontFamily: {
+        display: ["var(--font-syne)", "sans-serif"],
+        body: ["var(--font-dm-sans)", "sans-serif"],
+        sans: ["var(--font-dm-sans)", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -69,8 +72,8 @@ const config = {
         },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down":  "accordion-down 0.2s ease-out",
+        "accordion-up":    "accordion-up 0.2s ease-out",
       },
     },
   },

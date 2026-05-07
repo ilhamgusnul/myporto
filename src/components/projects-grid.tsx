@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { ProjectCard } from "./project-card";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 type Project = {
   id: string;
@@ -16,136 +15,107 @@ type Project = {
   category?: string;
 };
 
-const categories = [
-  { value: "all", label: "All Projects" },
-  { value: "Fullstack Web Developer", label: "Fullstack Web" },
-  { value: "UI/UX Design", label: "UI/UX Design" },
-  { value: "Visual & Brand Design", label: "Visual & Brand" },
-  { value: "Mobile Apps Developer", label: "Mobile Apps" },
+const CATEGORIES = [
+  { value: "all", label: "All" },
+  { value: "Fullstack Web Developer", label: "Fullstack" },
+  { value: "UI/UX Design", label: "UI/UX" },
+  { value: "Visual & Brand Design", label: "Branding" },
+  { value: "Mobile Apps Developer", label: "Mobile" },
 ];
 
-const PROJECTS_PER_PAGE = 6;
+const PER_PAGE = 4;
 
 export function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setPage] = useState(1);
 
-  const handleToggle = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentPage(1); // Reset to page 1 when category changes
-  };
-
-  // Filter projects based on selected category
-  const filteredProjects =
+  const filtered =
     selectedCategory === "all"
       ? projects
-      : projects.filter((project) => project.category === selectedCategory);
+      : projects.filter((p) => p.category === selectedCategory);
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
-  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
-  const endIndex = startIndex + PROJECTS_PER_PAGE;
-  const currentProjects = filteredProjects.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
+  function handleCategory(cat: string) {
+    setSelectedCategory(cat);
+    setPage(1);
+  }
 
   return (
-    <div className="space-y-8">
-      {/* Filter Buttons */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
-        {categories.map((category) => (
-          <Button
-            key={category.value}
-            onClick={() => handleCategoryChange(category.value)}
-            variant={selectedCategory === category.value ? "default" : "outline"}
-            className={
-              selectedCategory === category.value
-                ? "bg-[#ff6b00] hover:bg-[#e55f00] text-white"
-                : "hover:bg-gray-100"
-            }
-          >
-            {category.label}
-          </Button>
-        ))}
+    <div className="space-y-12">
+      {/* Filters row */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex flex-wrap items-center gap-6">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.value}
+              onClick={() => handleCategory(cat.value)}
+              className={`text-sm md:text-base font-semibold transition-colors duration-200 ${
+                selectedCategory === cat.value
+                  ? "text-[#111111] border-b-2 border-[#111111] pb-0.5"
+                  : "text-gray-400 hover:text-gray-900"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        <span className="text-sm text-gray-400 font-medium">
+          {filtered.length} project{filtered.length !== 1 ? "s" : ""}
+        </span>
       </div>
 
-      {/* Projects Grid */}
-      {currentProjects.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentProjects.map((project) => (
-              <div key={project.id}>
-                <ProjectCard
-                  {...project}
-                  expandedId={expandedId}
-                  onToggle={handleToggle}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-4 pt-4">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handlePrevPage}
-                disabled={currentPage === 1}
-                className="disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-
-              <div className="flex items-center gap-2">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setCurrentPage(page)}
-                    className={
-                      currentPage === page
-                        ? "bg-[#ff6b00] hover:bg-[#e55f00] text-white"
-                        : "hover:bg-gray-100"
-                    }
-                  >
-                    {page}
-                  </Button>
-                ))}
-              </div>
-
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages}
-                className="disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-            </div>
-          )}
-        </>
+      {/* Grid */}
+      {paginated.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          {paginated.map((project) => (
+            <ProjectCard key={project.id} {...project} />
+          ))}
+        </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            No projects found in this category yet.
-          </p>
+        <div className="text-center py-24">
+          <p className="text-lg text-gray-400 font-medium">No projects in this category.</p>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-4">
+          <button
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+            className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-700 hover:border-gray-900 hover:text-[#111111] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Previous page"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              onClick={() => setPage(n)}
+              className={`w-10 h-10 rounded-full text-sm font-semibold transition-all ${
+                page === n
+                  ? "bg-[#111111] text-white"
+                  : "border border-gray-200 text-gray-700 hover:border-gray-900 hover:text-[#111111]"
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page === totalPages}
+            className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-700 hover:border-gray-900 hover:text-[#111111] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            aria-label="Next page"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>
   );
 }
-

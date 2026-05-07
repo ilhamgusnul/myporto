@@ -92,12 +92,25 @@ export default async function AboutPage() {
           </p>
         </div>
 
-        <ImageUpload
-          name="avatarUrl"
-          label="Profile Image"
-          defaultUrl={about.avatarUrl || ""}
-          required={false}
-        />
+        <div className="space-y-3">
+          <ImageUpload
+            name="avatarUrl"
+            label="Profile Photo (Hero Section)"
+            defaultUrl={about.avatarUrl || ""}
+            required={false}
+          />
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 space-y-2">
+            <p className="text-xs font-bold text-amber-800 uppercase tracking-wide">📸 Rekomendasi Foto Hero</p>
+            <ul className="text-xs text-amber-700 space-y-1 list-disc list-inside">
+              <li>Gunakan foto dengan <strong>background transparan (PNG)</strong> agar menyatu dengan halaman</li>
+              <li>Orientasi <strong>portrait / vertikal</strong> (tinggi lebih dari lebar), contoh: 600×800px</li>
+              <li>Foto dari <strong>pinggang ke atas</strong> lebih baik dari foto full-body</li>
+              <li>Pastikan subjek berada di <strong>tengah frame</strong></li>
+              <li>Resolusi minimal <strong>800×1000px</strong> agar tajam di semua layar</li>
+              <li>Untuk menghapus background: gunakan <a href="https://remove.bg" target="_blank" rel="noopener noreferrer" className="underline font-semibold">remove.bg</a> atau Adobe Express (gratis)</li>
+            </ul>
+          </div>
+        </div>
 
         <div className="flex gap-2 pt-4">
           <SubmitButton>Save Changes</SubmitButton>
