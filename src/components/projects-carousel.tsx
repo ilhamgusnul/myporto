@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { ProjectCard } from "./project-card";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -16,13 +16,7 @@ type Project = {
 };
 
 export function ProjectsCarousel({ projects }: { projects: Project[] }) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const handleToggle = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -37,25 +31,8 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
     }
   };
 
-  // Click outside to collapse
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setExpandedId(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative">
       {/* Navigation Buttons - Top Right */}
       <div className="absolute -top-16 right-0 flex gap-2 z-10">
         <Button
@@ -91,11 +68,7 @@ export function ProjectsCarousel({ projects }: { projects: Project[] }) {
             key={project.id}
             className="flex-none w-[350px] snap-start"
           >
-            <ProjectCard
-              {...project}
-              expandedId={expandedId}
-              onToggle={handleToggle}
-            />
+            <ProjectCard {...project} />
           </div>
         ))}
       </div>
