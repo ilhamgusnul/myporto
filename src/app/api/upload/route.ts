@@ -20,9 +20,9 @@ export async function POST(req: Request) {
     }
 
     // Validate file type
-    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
     if (!validTypes.includes(file.type)) {
-      return NextResponse.json({ error: "Invalid file type. Only images allowed." }, { status: 400 });
+      return NextResponse.json({ error: "Invalid file type. Only images and SVG allowed." }, { status: 400 });
     }
 
     // Validate file size (max 5MB)

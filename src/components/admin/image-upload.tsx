@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, X, Loader2 } from "lucide-react";
-import Image from "next/image";
 
 interface ImageUploadProps {
   defaultUrl?: string;
@@ -28,17 +27,14 @@ export default function ImageUpload({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Reset error
     setError("");
 
-    // Validate file type
-    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+    const validTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
     if (!validTypes.includes(file.type)) {
-      setError("Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.");
+      setError("Invalid file type. Only JPEG, PNG, WebP, GIF, and SVG are allowed.");
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError("File too large. Maximum size is 5MB.");
       return;
@@ -46,6 +42,26 @@ export default function ImageUpload({
 
     setUploading(true);
 
+    // SVG: baca sebagai base64 data URL di sisi client
+    // (Supabase Storage menolak image/svg+xml, jadi kita simpan langsung sebagai data URL)
+    if (file.type === "image/svg+xml") {
+      try {
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(new Error("Gagal membaca file SVG"));
+          reader.readAsDataURL(file);
+        });
+        setUrl(dataUrl);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Gagal membaca SVG");
+      } finally {
+        setUploading(false);
+      }
+      return;
+    }
+
+    // Non-SVG: upload ke Supabase Storage seperti biasa
     try {
       const formData = new FormData();
       formData.set("file", file);
@@ -97,7 +113,6 @@ export default function ImageUpload({
                 className="w-full h-full object-contain"
                 onError={(e) => {
                   console.error("Image load error:", url);
-                  // Show placeholder on error
                   e.currentTarget.style.display = 'none';
                   const parent = e.currentTarget.parentElement;
                   if (parent && !parent.querySelector('.error-placeholder')) {
@@ -120,7 +135,9 @@ export default function ImageUpload({
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-gray-500 break-all">{url}</p>
+          <p className="text-xs text-gray-500 break-all">
+            {url.startsWith("data:") ? "SVG (disimpan sebagai data URL)" : url}
+          </p>
         </div>
       )}
 
@@ -130,7 +147,7 @@ export default function ImageUpload({
           <Input
             id={`${name}-upload`}
             type="file"
-            accept="image/*"
+            accept="image/*,.svg"
             onChange={handleFileChange}
             disabled={uploading}
             className="hidden"
@@ -149,7 +166,7 @@ export default function ImageUpload({
                 {uploading ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Uploading...
+                    {uploading ? "Memproses..." : ""}
                   </>
                 ) : (
                   <>
@@ -161,7 +178,7 @@ export default function ImageUpload({
             </Button>
           </Label>
           <span className="text-xs text-muted-foreground">
-            Max 5MB • JPEG, PNG, WebP, GIF
+            Max 5MB • JPEG, PNG, WebP, GIF, SVG
           </span>
         </div>
       )}
@@ -174,7 +191,7 @@ export default function ImageUpload({
       {/* Upload Progress */}
       {uploading && (
         <div className="text-sm text-muted-foreground">
-          Uploading to Supabase Storage...
+          Memproses file...
         </div>
       )}
     </div>

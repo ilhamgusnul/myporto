@@ -49,7 +49,7 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       <RevealObserver />
-      <NavbarScroll title={about?.title} />
+      <NavbarScroll title={about?.title} logoUrl={about?.logoUrl} />
 
       {/* ── HERO ───────────────────────────────────────────────── */}
       <section id="hero" className="relative min-h-screen pt-28 pb-0 flex flex-col overflow-hidden">

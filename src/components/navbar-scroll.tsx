@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X, ArrowUpRight } from "lucide-react";
 
-export function NavbarScroll({ title }: { title?: string }) {
+export function NavbarScroll({ title, logoUrl }: { title?: string; logoUrl?: string | null }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -26,16 +27,33 @@ export function NavbarScroll({ title }: { title?: string }) {
     >
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between">
-          {/* Left: Availability Badge */}
+          {/* Left: Logo or Availability Badge */}
           <div className="flex items-center">
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white pill-shadow border border-gray-100">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-xs font-semibold text-gray-800 tracking-wide">Available for New Project</span>
-            </div>
-            {/* Mobile Logo Fallback */}
-            <div className="sm:hidden font-display font-bold text-xl tracking-tight text-[#111111] uppercase">
-              {title || "Ilham Gusnul"}
-            </div>
+            {logoUrl ? (
+              /* Custom Logo */
+              <div className="relative h-9 w-auto">
+                <Image
+                  src={logoUrl}
+                  alt={title || "Logo"}
+                  height={36}
+                  width={120}
+                  className="h-9 w-auto object-contain"
+                  priority
+                />
+              </div>
+            ) : (
+              <>
+                {/* Desktop: Availability Badge */}
+                <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white pill-shadow border border-gray-100">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="text-xs font-semibold text-gray-800 tracking-wide">Available for New Project</span>
+                </div>
+                {/* Mobile: Name Fallback */}
+                <div className="sm:hidden font-display font-bold text-xl tracking-tight text-[#111111] uppercase">
+                  {title || "Ilham Gusnul"}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Middle: Navigation Links */}

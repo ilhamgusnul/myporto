@@ -1,6 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FolderKanban, Briefcase, Award, MessageSquare, Share2 } from "lucide-react";
+import { FolderKanban, Briefcase, Award, MessageSquare, Share2, ImageIcon } from "lucide-react";
+import { LogoUploadForm } from "@/components/admin/logo-upload-form";
+import { updateLogo, removeLogo } from "@/app/admin/logo/actions";
 
 export default async function AdminDashboard() {
   const [
@@ -16,6 +18,13 @@ export default async function AdminDashboard() {
     supabaseAdmin.from("Message").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("Platform").select("*", { count: "exact", head: true }),
   ]);
+
+  // Fetch About for logo
+  const { data: about } = await supabaseAdmin
+    .from("About")
+    .select("id, logoUrl")
+    .limit(1)
+    .single();
 
   const stats = [
     { label: "Projects", value: projectCount || 0, icon: FolderKanban, color: "text-blue-600" },
@@ -37,6 +46,33 @@ export default async function AdminDashboard() {
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <p className="text-muted-foreground mt-1">Welcome to your portfolio admin panel</p>
       </div>
+
+      {/* ── Logo & Branding ───────────────────────────────────────── */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-indigo-500" />
+            Logo & Branding
+          </CardTitle>
+          <p className="text-sm text-muted-foreground mt-1">
+            Upload logo untuk ditampilkan di navbar dan digunakan sebagai favicon browser.
+          </p>
+        </CardHeader>
+        <CardContent>
+          {about ? (
+            <LogoUploadForm
+              aboutId={about.id}
+              currentLogoUrl={about.logoUrl ?? null}
+              updateLogoAction={updateLogo}
+              removeLogoAction={removeLogo}
+            />
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              Data About belum tersedia. Buat data About terlebih dahulu.
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
