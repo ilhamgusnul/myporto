@@ -34,8 +34,8 @@ export async function createProject(formData: FormData) {
     const parsed = projectSchema.safeParse(values);
 
     if (!parsed.success) {
-      console.error("Validation errors:", parsed.error.errors);
-      throw new Error(`Validation failed: ${parsed.error.errors.map(e => e.message).join(", ")}`);
+      console.error("Validation errors:", parsed.error.issues);
+      throw new Error(`Validation failed: ${parsed.error.issues.map((e) => e.message).join(", ")}`);
     }
 
     const techArray = parsed.data.technologies
@@ -99,8 +99,8 @@ export async function updateProject(id: string, formData: FormData) {
     const parsed = projectSchema.safeParse(values);
 
     if (!parsed.success) {
-      console.error("Validation errors:", parsed.error.errors);
-      throw new Error(`Validation failed: ${parsed.error.errors.map(e => e.message).join(", ")}`);
+      console.error("Validation errors:", parsed.error.issues);
+      throw new Error(`Validation failed: ${parsed.error.issues.map((e) => e.message).join(", ")}`);
     }
 
     const techArray = parsed.data.technologies
